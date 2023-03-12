@@ -7,7 +7,7 @@ Version History
 
 v2.25
 ---
--Added an export functions. This will export selected names to a .csv file and will append names if names already exist
+-Added an export function. This will export selected names to a .csv file and will append names if names already exist
 
 -Fixed some typos and updated the About box
 

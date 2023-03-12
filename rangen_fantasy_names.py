@@ -1,6 +1,6 @@
-import random
+import random, csv
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QLineEdit, QMessageBox, QCheckBox, QStyleFactory
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QLineEdit, QMessageBox, QCheckBox, QStyleFactory, QFileDialog
 from PyQt5.QtGui import QFont, QPalette, QPixmap, QPainter, QColor, QPen, QDesktopServices
 from PyQt5.QtCore import Qt, QUrl
 
@@ -36,12 +36,12 @@ class RanGenFantasyNames(QWidget):
             return
         text = '\n'.join(checked_name_boxes)
         QApplication.clipboard().setText(text)
-    
+        
     # function to copy to clipboard as an image
     def copy_to_clipart(self):
         # checks if a name box has a corresponded check box checked and 
         checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
-        if not checked_name_boxes:  # check to do nothing if nothing is checked
+        if not checked_name_boxes:
             return
         height = 20
         for i in range(10):
@@ -63,24 +63,45 @@ class RanGenFantasyNames(QWidget):
         painter.end()
         QApplication.clipboard().setPixmap(pixmap)
         
+    # function to export names to a file
+    def export_names(self):
+        checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
+        if not checked_name_boxes:
+            return
+        file_path, _ = QFileDialog.getSaveFileName(self, "Export to CSV", "RanGen Fantasy Names", "CSV Files (*.csv)")
+        if not file_path:
+            return
+        with open(file_path, 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            for name in checked_name_boxes:
+                writer.writerow([name])
+        QMessageBox.information(self, "Export", "Selected names have been exported to the file.")
+    
+    # about message box function to easily be called on button click
     def about_message(self):
         message_box = QMessageBox()
         message_box.setWindowTitle('About')
-        message_box.setText('RanGen Fantasy Names constructs randomly generated names by joining up to four syllables that are constructed following \'consonant-vowel-consonant\' conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a>')
+        message_box.setText('<p>RanGen Fantasy Names constructs randomly generated names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
+        '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a .csv file which will have new names appended to it if it was previously written to.</p>')
         message_box.setStandardButtons(QMessageBox.Ok)
         message_box.exec_()
 
     # set and organize the widgets
     def init_ui(self):   
         # define buttons and what they do
-        self.generate_button = QPushButton('Re-Roll All')
-        self.generate_button.setToolTip('Re-Roll another set of random names')
-        self.generate_button.clicked.connect(self.generate_names)
-        
-        self.reroll_button = QPushButton('Re-Roll Unselected')
+        self.reroll_button = QPushButton('Re-Roll')
         self.reroll_button.setToolTip('Re-Roll unselected names')
         self.reroll_button.clicked.connect(self.generate_selected_names)
         
+        self.toggle_button = QPushButton('Select All')
+        self.toggle_button.clicked.connect(self.toggle_checkboxes)
+
+        self.about_button = QPushButton('About')
+        self.about_button.clicked.connect(self.about_message)
+
+        self.quit_button = QPushButton('Quit')
+        self.quit_button.clicked.connect(QApplication.instance().quit)
+         
         self.clipboard_button = QPushButton('Copy as Text')
         self.clipboard_button.setToolTip('Copy selected names as text to clipboard')
         self.clipboard_button.clicked.connect(self.copy_to_clipboard)
@@ -89,26 +110,22 @@ class RanGenFantasyNames(QWidget):
         self.clipart_button.setToolTip('Copy selected names as an image to clipboard')
         self.clipart_button.clicked.connect(self.copy_to_clipart)
         
-        self.toggle_button = QPushButton('Select All')
-        self.toggle_button.clicked.connect(self.toggle_checkboxes)
-
-        self.about_button = QPushButton('About')
-        self.about_button.clicked.connect(self.about_message)
-
-        self.quit_button = QPushButton('Exit')
-        self.quit_button.clicked.connect(QApplication.instance().quit)
+        self.export_button = QPushButton('Export')
+        self.export_button.setToolTip('Export selected names to a CSV file')
+        self.export_button.clicked.connect(self.export_names)
         
         # create the buttons in horizontal boxes
         button_layout_1 = QHBoxLayout()
-        button_layout_2 = QHBoxLayout()
-        button_layout_1.addWidget(self.generate_button)
+        button_layout_1.addWidget(self.reroll_button)
         button_layout_1.addWidget(self.toggle_button)
         button_layout_1.addWidget(self.about_button)
         button_layout_1.addWidget(self.quit_button)
+        
+        button_layout_2 = QHBoxLayout()
         button_layout_2.addWidget(QLabel('Selected Names: '))
-        button_layout_2.addWidget(self.reroll_button)
         button_layout_2.addWidget(self.clipboard_button)
         button_layout_2.addWidget(self.clipart_button)
+        button_layout_2.addWidget(self.export_button)
  
         # create pairings of check box and name box for each generated name in veritcal boxes
         check_layout = QVBoxLayout()
@@ -152,7 +169,7 @@ class RanGenFantasyNames(QWidget):
         main_layout.addLayout(check_text_layout)
         main_layout.addLayout(foot_layout)
         self.setLayout(main_layout)
-        self.setWindowTitle('RanGen Fantasy Names 2.2')
+        self.setWindowTitle('RanGen Fantasy Names 2.25')
 
     # define how syllables are generated
     def generate_syllable(self, prev_char=''):
@@ -211,7 +228,7 @@ class RanGenFantasyNames(QWidget):
         name = ''
         # keep generating a name until it has at least one consonant or cluster
         while not any(c in self.consonants or c in self.beginning_clusters or c in self.ending_clusters for c in name):
-            num_syllables = random.choices([1, 2, 3, 4], weights=[1, 3, 3, 3])[0]
+            num_syllables = random.choices([1, 2, 3, 4], weights=[1, 3, 3, 2])[0] # this makes names with more than one syllable favored
             syllables = [self.generate_syllable() for _ in range(num_syllables)]
             name = ''.join(syllables)
             # insert a space between two syllables if there are more than a certain number of total letters generated
@@ -221,7 +238,7 @@ class RanGenFantasyNames(QWidget):
             name = ''.join(syllables)
         return name.title()
 
-    # a function that when called generates multiple names at a time
+    # a function that when called generates names for all boxes
     def generate_names(self):
         for i in range(10):
             box_id = f"{i+1}"   # create the box id numbers to be referenced
@@ -229,7 +246,7 @@ class RanGenFantasyNames(QWidget):
             name = self.generate_name()
             self.name_text_box[box_id].setText(name)    # apply the name to the line edit box
     
-    # a function to only generated names that are selected via check box
+    # a function to only generate names for the boxes that are checked
     def generate_selected_names(self):
         for i in range(10):
             box_id = f"{i+1}"

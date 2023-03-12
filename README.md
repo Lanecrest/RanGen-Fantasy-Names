@@ -1,7 +1,6 @@
 # RanGen-Fantasy-Names
-Creates random names using CVC (consonant-vowel-consonant) syllables
 
-This program randomly generates syllables based on letters and letter groupings and combines them into a name. The code comments provide more info
+RanGen Fantasy Names is a python application that creates randomly generated names by joining up to four randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions.
 
 v2.2
 ====

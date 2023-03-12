@@ -1,4 +1,4 @@
-# Fantasy-Name-Generator
+# RanGen-Fantasy-Names
 Creates random names using CVC (consonant-vowel-consonant) syllables
 
 This program randomly generates syllables based on letters and letter groupings and combines them into a name. The code comments provide more info

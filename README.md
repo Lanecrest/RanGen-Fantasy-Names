@@ -13,7 +13,7 @@ v2.2
 
 -Can multi select names to copy to clipboard as either text or an image
 
--Can re-reroll selected names only but can still re-roll all names at once
+-Can re-reroll names based on what is selected
 
 -Added an 'About' dialog box and link to github project
 

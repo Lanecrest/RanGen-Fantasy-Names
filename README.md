@@ -5,6 +5,17 @@ RanGen Fantasy Names is a python application that creates randomly generated nam
 Version History
 ===
 
+v2.25
+---
+-Added an export functions. This will export selected names to a .csv file and will append names if names already exist
+
+-Fixed some typos and updated the About box
+
+-Made four syllable names slightly less frequent
+
+-There is now just one re-roll button and it ignores selected names. This is explained in the About box
+
+
 v2.2
 ---
 -Overhaul to the GUI layout

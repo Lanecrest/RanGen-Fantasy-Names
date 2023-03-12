@@ -10,12 +10,13 @@ class FantasyNameGenerator(QWidget):
         super().__init__()
         # define the letters
         self.vowels = ['a', 'e', 'i', 'o', 'u', 'y']
-        self.diphthongs = ['ae', 'ai', 'au', 'ea', 'ee', 'ei', 'eo', 'eu', 'ia', 'ie', 'io', 'oa', 'oi', 'oo', 'ou']
+        self.diphthongs = ['ae', 'ai', 'au', 'ay', 'ea', 'ee', 'ei', 'eo', 'eu', 'ey', 'ia', 'ie', 'io', 'oa', 'oi', 'oo', 'ou', 'oy']
         self.consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z']
         self.beginning_clusters = ['bl', 'br', 'ch', 'cl', 'cr', 'dr', 'fl', 'fr', 'gl', 'gr', 'gw', 'kl', 'ph', 'pl', 'pr', 'qu', 'rh', 'sc', 'sh', 'sk', 'sl', 'sm', 'sn', 'sp', 'st', 'sw', 'th', 'tr', 'tw', 'wh', 'wr', 'zh', 'scr', 'shr', 'sph', 'spl', 'spr', 'squ', 'str', 'thr']
         self.ending_clusters = ['ch', 'ck', 'ft', 'ld', 'lt', 'nd', 'ng', 'nk', 'nt', 'ph', 'pt', 'rd', 'rk', 'sh', 'sk', 'sp', 'st', 'th', 'dd', 'ff', 'gg', 'll', 'mm', 'pp', 'rr', 'ss', 'tt', 'zz', 'rth', 'tch']
 
         self.init_ui()
+        self.generate_names()
         
     # create a function to copy to clipboard as an image
     def copy_to_clipboard(self):
@@ -25,54 +26,57 @@ class FantasyNameGenerator(QWidget):
 
     # set and organize the widgets
     def init_ui(self):
-        self.generate_button = QPushButton('Generate')
-        self.generate_button.setFixedWidth(125)
-        self.generate_button.clicked.connect(self.generate_names)
-
-        self.copy_button = QPushButton('Copy as Image')
-        self.copy_button.setFixedWidth(125)
-        self.copy_button.clicked.connect(self.copy_to_clipboard)
-
-        self.quit_button = QPushButton('Quit')
-        self.quit_button.setFixedWidth(125)
-        self.quit_button.clicked.connect(QApplication.instance().quit)
-
-        self.names_text_edit = QTextEdit()
-        text_edit_font = QFont("Consolas", 12.5)
-        text_edit_font.setBold(True)
-        self.names_text_edit.setFont(text_edit_font)
-        self.names_text_edit.setReadOnly(True)
-
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.generate_button)
-        button_layout.addWidget(self.copy_button)
-        button_layout.addWidget(self.quit_button)
-        
         # create a function to open links
         def handle_link(url):
             QDesktopServices.openUrl(QUrl(url))
         
+        # define buttons and what they do
+        self.generate_button = QPushButton('Generate')
+        self.generate_button.setFixedWidth(125)
+        self.generate_button.clicked.connect(self.generate_names)
+        self.copy_button = QPushButton('Copy as Image')
+        self.copy_button.setFixedWidth(125)
+        self.copy_button.clicked.connect(self.copy_to_clipboard)
+        self.quit_button = QPushButton('Quit')
+        self.quit_button.setFixedWidth(125)
+        self.quit_button.clicked.connect(QApplication.instance().quit)
+
+        # define the text edit box that will contain the generated names
+        self.names_text_edit = QTextEdit()
+        text_edit_font = QFont("Consolas", 12)
+        text_edit_font.setBold(True)
+        self.names_text_edit.setFont(text_edit_font)
+        self.names_text_edit.setReadOnly(True)
+
+        # create the buttons in a horizontal box
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.generate_button)
+        button_layout.addWidget(self.copy_button)
+        button_layout.addWidget(self.quit_button)
+ 
+        # create the footer in a horizontal box
         foot_layout= QHBoxLayout()
-        foot_link = QLabel('©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a>')
+        foot_link = QLabel('Fantasy Name Generator ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a>')
         foot_link.setOpenExternalLinks(True)
         foot_link.linkActivated.connect(handle_link)
-        foot_layout.addWidget(QLabel('Fantasy Name Generator'), alignment=QtCore.Qt.AlignHCenter)
         foot_layout.addWidget(foot_link, alignment=QtCore.Qt.AlignHCenter)
 
+        # create a veritcal box for the main display and layer the buttons, text edit, and footer in that order
         main_layout = QVBoxLayout()
         main_layout.addLayout(button_layout)
-        main_layout.addWidget(QLabel('Click \'Generate\' to create eight random fanasy names'))
+        main_layout.addWidget(QLabel('Click \'Generate\' for another set of random names'))
         main_layout.addWidget(self.names_text_edit)
         main_layout.addLayout(foot_layout)
         
+        # finalize the window display and set the window title
         self.setLayout(main_layout)
-        self.setWindowTitle('Fantasy Name Generator 2.0')
+        self.setWindowTitle('Fantasy Name Generator 2.1')
 
     # define how syllables are generated
     def generate_syllable(self, prev_char=''):
         syllable = ''
         # generate the first part of the syllable
-        if random.random() < 0.15:
+        if random.random() < 0.2:
             # generate a beginning cluster
             beginning_cluster = random.choice(self.beginning_clusters)
             if len(syllable) > 0 and prev_char == syllable[-1]:
@@ -88,7 +92,7 @@ class FantasyNameGenerator(QWidget):
                 syllable += consonant
                 prev_char = consonant
         # generate the middle part of the syllable
-        if random.random() < 0.7:
+        if random.random() < 0.75:
             # genearate a vowel
             vowel = random.choice(self.vowels)
             if len(syllable) > 0 and prev_char == syllable[-1]:
@@ -112,7 +116,7 @@ class FantasyNameGenerator(QWidget):
             prev_char = ending_cluster[-1]
         else:
             # generate a consonant or no consonant
-            if random.random() < 0.5:
+            if random.random() < 0.6:
                 consonant = random.choice(self.consonants)
                 if len(syllable) > 0 and prev_char == syllable[-1]:
                     consonant = random.choice([c for c in self.consonants if c != prev_char])
@@ -140,7 +144,7 @@ class FantasyNameGenerator(QWidget):
         self.names_text_edit.clear()
         for i in range(8):
             self.names_text_edit.append(self.generate_name() + '\n')
-
+        
 # load the app. in an if statement so it doesn't break if called in another app
 if __name__ == '__main__':
     # set the palette colors

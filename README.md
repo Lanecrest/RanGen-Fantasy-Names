@@ -2,6 +2,8 @@
 
 RanGen Fantasy Names is a python application that creates randomly generated names by joining up to four randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions.
 
+Version History:
+
 v2.2
 ====
 -Overhaul to the GUI layout
@@ -35,3 +37,8 @@ v2.0
 v1.0
 ====
 -Initial release, runs in console
+
+---
+Credits
+---
+Programmed by Lanecrest Tech

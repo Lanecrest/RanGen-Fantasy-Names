@@ -3,6 +3,20 @@ Creates random names using CVC (consonant-vowel-consonant) syllables
 
 This program randomly generates syllables based on letters and letter groupings and combines them into a name. The code comments provide more info
 
+v2.2
+====
+-Overhaul to the GUI layout
+
+-Changed the name of the program and project
+
+-Names now generate in their own text boxes and have corresponding check boxes to select them
+
+-Can multi select names to copy to clipboard as either text or an image
+
+-Can re-reroll selected names only but can still re-roll all names at once
+
+-Added an 'About' dialog box and link to github project
+
 v2.1
 ====
 -Minor tweaks to the GUI

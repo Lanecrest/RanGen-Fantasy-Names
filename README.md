@@ -6,6 +6,7 @@ Version History
 ===
 
 v2.3
+---
 -Removed possibility for a letter to repeat itself more than twice in a row (maybe)
 
 -Chananged split names to have an apostrophe instead of a space.

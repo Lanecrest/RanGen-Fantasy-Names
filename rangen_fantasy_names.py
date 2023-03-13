@@ -1,7 +1,7 @@
 import random, csv
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QLineEdit, QMessageBox, QCheckBox, QStyleFactory, QFileDialog
-from PyQt5.QtGui import QFont, QPalette, QPixmap, QPainter, QColor, QPen, QDesktopServices
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QTextEdit, QLineEdit, QMessageBox, QCheckBox, QStyleFactory, QFileDialog
+from PyQt5.QtGui import QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen, QDesktopServices
 from PyQt5.QtCore import Qt, QUrl
 
 class RanGenFantasyNames(QWidget):
@@ -19,7 +19,7 @@ class RanGenFantasyNames(QWidget):
         self.generate_names()
     
     # function to toggle check boxes
-    def toggle_checkboxes(self, state):
+    def toggle_checkboxes(self):
         checked = all([self.name_check_box[f"{i}"].isChecked() for i in range(1, 11)])
         for i in range(1, 11):
             self.name_check_box[f"{i}"].setChecked(not checked)
@@ -43,15 +43,14 @@ class RanGenFantasyNames(QWidget):
         checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
         if not checked_name_boxes:
             return
+        font = QFont("Consolas", 12, QFont.Bold)
         height = 20
-        for i in range(10):
-            if self.name_check_box[f"{i+1}"].isChecked():
-                height += self.name_text_box[f"{i+1}"].fontMetrics().height()
-        pixmap = QPixmap(200, height)
+        for name_text_box in checked_name_boxes:
+            height += QFontMetrics(font).height()
+        pixmap = QPixmap(220, height)
         pixmap.fill(QColor('#704214'))
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
-        font = QFont("Consolas", 12, QFont.Bold)
         pen = QPen(QColor('#ffefe0'))
         painter.setFont(font)
         painter.setPen(pen)
@@ -59,7 +58,7 @@ class RanGenFantasyNames(QWidget):
         y = 20
         for name_text_box in checked_name_boxes:
             painter.drawText(5, y, name_text_box)
-            y += 20
+            y += QFontMetrics(font).height()
         painter.end()
         QApplication.clipboard().setPixmap(pixmap)
         
@@ -82,7 +81,7 @@ class RanGenFantasyNames(QWidget):
         message_box = QMessageBox()
         message_box.setWindowTitle('About')
         message_box.setText('<p>RanGen Fantasy Names constructs randomly generated names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
-        '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a .csv file which will have new names appended to it if it was previously written to.</p>')
+        '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>')
         message_box.setStandardButtons(QMessageBox.Ok)
         message_box.exec_()
 
@@ -114,66 +113,54 @@ class RanGenFantasyNames(QWidget):
         self.export_button.setToolTip('Export selected names to a CSV file')
         self.export_button.clicked.connect(self.export_names)
         
-        # create the buttons in horizontal boxes
-        button_layout_1 = QHBoxLayout()
-        button_layout_1.addWidget(self.reroll_button)
-        button_layout_1.addWidget(self.toggle_button)
-        button_layout_1.addWidget(self.about_button)
-        button_layout_1.addWidget(self.quit_button)
+        # create the buttons in a grid
+        button_layout = QGridLayout()
+        button_layout.addWidget(self.reroll_button, 0, 0)
+        button_layout.addWidget(self.toggle_button, 0, 1)
+        button_layout.addWidget(self.about_button, 0, 2)
+        button_layout.addWidget(self.quit_button, 0, 3)
         
-        button_layout_2 = QHBoxLayout()
-        button_layout_2.addWidget(QLabel('Selected Names: '))
-        button_layout_2.addWidget(self.clipboard_button)
-        button_layout_2.addWidget(self.clipart_button)
-        button_layout_2.addWidget(self.export_button)
+        button_layout.addWidget(QLabel('Selected Names: '), 1, 0)
+        button_layout.addWidget(self.clipboard_button, 1, 1)
+        button_layout.addWidget(self.clipart_button, 1, 2)
+        button_layout.addWidget(self.export_button, 1, 3)
  
-        # create pairings of check box and name box for each generated name in veritcal boxes
-        check_layout = QVBoxLayout()
-        text_layout = QVBoxLayout()
+        # create a grid for the name check and text boxes
+        check_text_layout = QGridLayout()
         self.name_text_box = {}
         self.name_check_box = {}
-        check_layout.setSpacing(10)
         text_box_font = QFont("Consolas", 12)
         text_box_font.setBold(True)
-        # create check boxes for each name
+        # create check and text boxes for each name
         for i in range(10):
             box_id = f"{i+1}"          
             self.name_check_box[box_id] = QCheckBox()
             self.name_check_box[box_id].setChecked(False)
-            self.name_check_box[box_id].setFixedSize(20, 20)
-            check_layout.addWidget(self.name_check_box[box_id])
-        # create text boxes for each name
-        for i in range(10):
-            box_id = f"{i+1}"
+            check_text_layout.addWidget(self.name_check_box[box_id], i, 0)
+            
             self.name_text_box[box_id] = QLineEdit()
             self.name_text_box[box_id].setFont(text_box_font)
             self.name_text_box[box_id].setReadOnly(True)
-            text_layout.addWidget(self.name_text_box[box_id])
-
-        # create a horizontal box for the check and text boxes
-        check_text_layout = QHBoxLayout()
-        check_text_layout.addLayout(check_layout)
-        check_text_layout.addLayout(text_layout)
+            check_text_layout.addWidget(self.name_text_box[box_id],i, 1)
  
         # create the footer in a horizontal box
         foot_layout= QHBoxLayout()
         self.foot_link = QLabel('RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a>')
-        self.foot_link.setToolTip('Lanecrest Tech')
         self.foot_link.setOpenExternalLinks(True)
         foot_layout.addWidget(self.foot_link, alignment=QtCore.Qt.AlignHCenter)
         
         # finalize the window display as a vertical box and set the window title
         main_layout = QVBoxLayout()
-        main_layout.addLayout(button_layout_1)
-        main_layout.addLayout(button_layout_2)
+        main_layout.addLayout(button_layout)
         main_layout.addLayout(check_text_layout)
         main_layout.addLayout(foot_layout)
         self.setLayout(main_layout)
-        self.setWindowTitle('RanGen Fantasy Names 2.25')
+        self.setWindowTitle('RanGen Fantasy Names 2.3')
 
     # define how syllables are generated
-    def generate_syllable(self, prev_char=''):
+    def generate_syllable(self):
         syllable = ''
+        prev_char = ''
         # generate the first part of the syllable
         if random.random() < 0.2:
             # generate a beginning cluster
@@ -189,7 +176,7 @@ class RanGenFantasyNames(QWidget):
                 if len(syllable) > 0 and prev_char == syllable[-1]:
                     consonant = random.choice([c for c in self.consonants if c != prev_char])
                 syllable += consonant
-                prev_char = consonant
+                prev_char = consonant[-1]
         # generate the middle part of the syllable
         if random.random() < 0.75:
             # genearate a vowel
@@ -197,7 +184,7 @@ class RanGenFantasyNames(QWidget):
             if len(syllable) > 0 and prev_char == syllable[-1]:
                 vowel = random.choice([v for v in self.vowels if v != prev_char])
             syllable += vowel
-            prev_char = vowel
+            prev_char = vowel[-1]
         else:
             # generate a diphthong
             diphthong = random.choice(self.diphthongs)
@@ -220,22 +207,29 @@ class RanGenFantasyNames(QWidget):
                 if len(syllable) > 0 and prev_char == syllable[-1]:
                     consonant = random.choice([c for c in self.consonants if c != prev_char])
                 syllable += consonant
-                prev_char = consonant
+                prev_char = consonant[-1]
         return syllable
 
     # generate a name based on the syllable generation rules
     def generate_name(self):
         name = ''
-        # keep generating a name until it has at least one consonant or cluster
-        while not any(c in self.consonants or c in self.beginning_clusters or c in self.ending_clusters for c in name):
+        while True:
             num_syllables = random.choices([1, 2, 3, 4], weights=[1, 3, 3, 2])[0] # this makes names with more than one syllable favored
             syllables = [self.generate_syllable() for _ in range(num_syllables)]
             name = ''.join(syllables)
-            # insert a space between two syllables if there are more than a certain number of total letters generated
-            if len(''.join(syllables)) > 10:
-                i = random.randint(1, len(syllables) - 1)
-                syllables.insert(i, ' ')
-            name = ''.join(syllables)
+            # check if a single letter repeats itself too many times and regenrate the name if so
+            for i, letter in enumerate(name):
+                if i > 1 and letter == name[i-1] and letter == name[i-2]:
+                    name = ''
+                    break
+            # check if the name contains at least one consonant or cluster 
+            if any(c in self.consonants or c in self.beginning_clusters or c in self.ending_clusters for c in name):
+                break
+            # insert an apostrophe between syllables if there are more than a certain number of total letters generated
+        if len(''.join(syllables)) > 10:
+            i = random.randint(1, len(syllables) - 1)
+            syllables.insert(i, '\'')
+        name = ''.join(syllables)
         return name.title()
 
     # a function that when called generates names for all boxes

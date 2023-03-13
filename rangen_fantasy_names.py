@@ -80,7 +80,7 @@ class RanGenFantasyNames(QWidget):
     def about_message(self):
         message_box = QMessageBox()
         message_box.setWindowTitle('About')
-        message_box.setText('<p>RanGen Fantasy Names constructs randomly generated names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
+        message_box.setText('<p>RanGen Fantasy Names procedurally generates names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
         '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>')
         message_box.setStandardButtons(QMessageBox.Ok)
         message_box.exec_()

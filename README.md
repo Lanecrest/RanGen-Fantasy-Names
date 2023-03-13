@@ -1,6 +1,6 @@
 # RanGen-Fantasy-Names
 
-RanGen Fantasy Names is a python application that creates randomly generated names by joining up to four randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions. It requires the PyQt module
+RanGen Fantasy Names is a Python application that procedurally generates names by joining up to four randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions. It requires the PyQt module.
 
 Version History
 ===

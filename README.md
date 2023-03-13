@@ -4,6 +4,10 @@ RanGen Fantasy Names is a Python application that procedurally generates names b
 
 [View Changelog](changelog.md)
 
+About
+===
+Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.
+
 Requirements
 ===
 -PyQt5

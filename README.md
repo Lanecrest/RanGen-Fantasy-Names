@@ -10,7 +10,7 @@ Use the check boxes to select specific names you would like to work with. Select
 
 Requirements
 ===
--PyQt5
+PyQt5==5.15.9
 
 Screenshots
 ===

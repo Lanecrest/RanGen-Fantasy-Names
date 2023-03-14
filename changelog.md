@@ -1,4 +1,4 @@
-Version History
+Change Log
 =
 
 v2.3

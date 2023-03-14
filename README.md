@@ -13,7 +13,7 @@ While using the GUI, the check boxes are used to select specific names you would
 
 Requirements
 =
-PyQt5==5.15.9
+[requirements.txt](requirements.txt)
 
 Screenshots
 =

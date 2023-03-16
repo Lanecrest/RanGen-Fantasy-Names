@@ -1,37 +1,71 @@
-import random, csv
+import csv
+from rangen_words import rangen_word
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QTextEdit, QLineEdit, QMessageBox, QCheckBox, QStyleFactory, QFileDialog
-from PyQt5.QtGui import QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen, QDesktopServices
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QStyleFactory, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QSlider, QLineEdit, QMessageBox, QCheckBox, QRadioButton, QButtonGroup, QFileDialog
+from PyQt5.QtGui import QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen
+from PyQt5.QtCore import Qt
 
 class RanGenFantasyNames(QWidget):
-    # initialize the app and set some variables
+    # initialize the app and call some starting functions
     def __init__(self):
         super().__init__()
-        # define the letters
-        self.vowels = ['a', 'e', 'i', 'o', 'u', 'y']
-        self.diphthongs = ['ae', 'ai', 'au', 'ay', 'ea', 'ee', 'ei', 'eo', 'eu', 'ey', 'ia', 'ie', 'io', 'oa', 'oi', 'oo', 'ou', 'oy']
-        self.consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z']
-        self.beginning_clusters = ['bl', 'br', 'ch', 'cl', 'cr', 'dr', 'fl', 'fr', 'gl', 'gr', 'gw', 'kl', 'ph', 'pl', 'pr', 'qu', 'rh', 'sc', 'sh', 'sk', 'sl', 'sm', 'sn', 'sp', 'st', 'sw', 'th', 'tr', 'tw', 'wh', 'wr', 'zh', 'scr', 'shr', 'sph', 'spl', 'spr', 'squ', 'str', 'thr']
-        self.ending_clusters = ['ch', 'ck', 'ft', 'ld', 'lt', 'nd', 'ng', 'nk', 'nt', 'ph', 'pt', 'rd', 'rk', 'sh', 'sk', 'sp', 'st', 'th', 'dd', 'ff', 'gg', 'll', 'mm', 'pp', 'rr', 'ss', 'tt', 'zz', 'rth', 'tch']
-
+        self.setWindowTitle('RanGen Fantasy Names 3.0')
         self.init_ui()
-        self.generate_names()
-    
-    # function to toggle check boxes
-    def toggle_checkboxes(self):
-        checked = all([self.name_check_box[f"{i}"].isChecked() for i in range(1, 11)])
-        for i in range(1, 11):
-            self.name_check_box[f"{i}"].setChecked(not checked)
-        if checked:
-            self.toggle_button.setText("Select All")
-        else:
-            self.toggle_button.setText("Deselect All")
+        self.reset_values()
+        self.starting_names()
+
+    # function to reset the values to default
+    def reset_values(self):
+        self.var_beg_cons_prob = 0.8
+        self.var_beg_cluster_prob = 0.2
+        self.var_vowel_prob = 0.75
+        self.var_end_cons_prob = 0.6
+        self.var_end_cluster_prob = 0.15
+        self.var_name_splitter = True
+        self.var_splitter_char = ' '
+        self.name_splitter_check_box.setChecked(self.var_name_splitter)
+        self.splitter_char_radio1.setChecked(True)
+        self.beg_cons_slider.setValue(int(self.var_beg_cons_prob * 100))
+        self.beg_cluster_slider.setValue(int(self.var_beg_cluster_prob * 100))
+        self.vowel_slider.setValue(int(self.var_vowel_prob * 100))
+        self.end_cons_slider.setValue(int(self.var_end_cons_prob * 100))
+        self.end_cluster_slider.setValue(int(self.var_end_cluster_prob * 100))
+
+    # a function to generate names when the app initializes for the first time (using the defaults)
+    def starting_names(self):
+        for i in range(10):
+            box_id = f'{i+1}'
+            name = rangen_word(
+                beg_cons_prob=self.var_beg_cons_prob,
+                beg_cluster_prob=self.var_beg_cluster_prob,
+                vowel_prob=self.var_vowel_prob,
+                end_cons_prob=self.var_end_cons_prob,
+                end_cluster_prob=self.var_end_cluster_prob,
+                name_splitter=self.var_name_splitter,
+                splitter_char=self.var_splitter_char
+                )
+            self.name_text_box[box_id].setText(name.title())
+
+    # function to generate names for the name text boxes that are not selected with a corresponding check box id (being checked off 'saves' the name from re-rolling)
+    def generate_names(self):
+        for i in range(10):
+            box_id = f'{i+1}'
+            if not self.name_check_box[box_id].isChecked():
+                name = rangen_word(
+                    beg_cons_prob=self.var_beg_cons_prob,
+                    beg_cluster_prob=self.var_beg_cluster_prob,
+                    vowel_prob=self.var_vowel_prob,
+                    end_cons_prob=self.var_end_cons_prob,
+                    end_cluster_prob=self.var_end_cluster_prob,
+                    name_splitter=self.var_name_splitter,
+                    splitter_char=self.var_splitter_char
+                )
+                self.name_text_box[box_id].setText(name.title())  
         
     # function to copy to clipboard as text
     def copy_to_clipboard(self):
         # checks if a name box has a corresponding check box checked
-        checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
+        checked_name_boxes = [self.name_text_box[f'{i+1}'].text() for i in range(10) if self.name_check_box[f'{i+1}'].isChecked()]
         if not checked_name_boxes:  # check to do nothing if nothing is checked
             return
         text = '\n'.join(checked_name_boxes)
@@ -40,67 +74,117 @@ class RanGenFantasyNames(QWidget):
     # function to copy to clipboard as an image
     def copy_to_clipart(self):
         # checks if a name box has a corresponded check box checked and 
-        checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
+        checked_name_boxes = [self.name_text_box[f'{i+1}'].text() for i in range(10) if self.name_check_box[f'{i+1}'].isChecked()]
         if not checked_name_boxes:
             return
-        font = QFont("Consolas", 12, QFont.Bold)
+        clipart_font = QFont('Consolas', 12, QFont.Bold)
         height = 20
         for name_text_box in checked_name_boxes:
-            height += QFontMetrics(font).height()
+            height += QFontMetrics(clipart_font).height()
         pixmap = QPixmap(220, height)
-        pixmap.fill(QColor('#704214'))
+        pixmap.fill(QColor('#704214'))  # should match QPalette.Base as defined for the GUI
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
-        pen = QPen(QColor('#ffefe0'))
-        painter.setFont(font)
+        pen = QPen(QColor('#ffefe0'))   # should match QPalette.Text as defined for the GUI
+        painter.setFont(clipart_font)
         painter.setPen(pen)
         # draw text for each checked line
         y = 20
         for name_text_box in checked_name_boxes:
             painter.drawText(5, y, name_text_box)
-            y += QFontMetrics(font).height()
+            y += QFontMetrics(clipart_font).height()
         painter.end()
         QApplication.clipboard().setPixmap(pixmap)
         
     # function to export names to a file
     def export_names(self):
-        checked_name_boxes = [self.name_text_box[f"{i+1}"].text() for i in range(10) if self.name_check_box[f"{i+1}"].isChecked()]
+        checked_name_boxes = [self.name_text_box[f'{i+1}'].text() for i in range(10) if self.name_check_box[f'{i+1}'].isChecked()]
         if not checked_name_boxes:
             return
-        file_path, _ = QFileDialog.getSaveFileName(self, "Export to CSV", "RanGen Fantasy Names", "CSV Files (*.csv)")
+        file_path, _ = QFileDialog.getSaveFileName(self, 'Export to CSV', 'RanGen Fantasy Names', 'CSV Files (*.csv)')
         if not file_path:
             return
         with open(file_path, 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             for name in checked_name_boxes:
                 writer.writerow([name])
-        QMessageBox.information(self, "Export", "Selected names have been exported to the file.")
-    
-    # about message box function to easily be called on button click
+        QMessageBox.information(self, 'Export', 'Selected names have been exported to the file.')
+
+    # function to toggle check boxes
+    def toggle_checkboxes(self):
+        toggle_button_text = self.toggle_button.text()
+        for i in range(1, 11):
+            if toggle_button_text == 'Select All':
+                self.name_check_box[f'{i}'].setChecked(True)
+                self.toggle_button.setText('Deselect All')
+            elif toggle_button_text == 'Deselect All':
+                self.name_check_box[f'{i}'].setChecked(False)
+                self.toggle_button.setText('Select All')
+
+    # function for about message box dialog
     def about_message(self):
         message_box = QMessageBox()
         message_box.setWindowTitle('About')
-        message_box.setText('<p>RanGen Fantasy Names procedurally generates names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
-        '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when re-rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>')
+        message_box.setText(
+            '<p>RanGen Fantasy Names procedurally generates names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
+            '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>'
+            '<p>Use the settings at the bottom of the interface to adjust values. You can toggle whether long names will be split and choose the symbol that splits them. You can also adjust the frequency of consonants, clusters, vowels, diphthongs, etc. The behavior will effect every syllable a name contains.</p>'
+            '<p align="center">RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a></p>'
+            )
         message_box.setStandardButtons(QMessageBox.Ok)
         message_box.exec_()
-
-    # set and organize the widgets
-    def init_ui(self):   
-        # define buttons and what they do
-        self.reroll_button = QPushButton('Re-Roll')
-        self.reroll_button.setToolTip('Re-Roll unselected names')
-        self.reroll_button.clicked.connect(self.generate_selected_names)
+     
+    # function to toggle whether long names will have a split in them
+    def set_var_name_splitter(self, state):
+        self.var_name_splitter = state == Qt.Checked
         
+    # function to set what character splits the names
+    def set_var_splitter_char(self, button):
+        if button == self.splitter_char_radio1:
+            self.var_splitter_char = ' '
+        elif button == self.splitter_char_radio2:
+            self.var_splitter_char = '\''
+        elif button == self.splitter_char_radio3:
+            self.var_splitter_char = '-'
+            
+    # functions to set the syllable generation values
+    def set_var_beg_cons_prob(self, value):
+            self.var_beg_cons_prob = value / 100
+
+    def set_var_beg_cluster_prob(self, value):
+            self.var_beg_cluster_prob = value / 100
+
+    def set_var_vowel_prob(self, value):
+            self.var_vowel_prob = value / 100
+
+    def set_var_end_cons_prob(self, value):
+            self.var_end_cons_prob = value / 100
+
+    def set_var_end_cluster_prob(self, value):
+            self.var_end_cluster_prob = value / 100
+
+    # function to define the GUI and its widgets
+    def init_ui(self):
+        # create buttons for app menus
+        self.generate_button = QPushButton('Roll')
+        self.generate_button.setToolTip('Generate names for unchecked fields')
+        self.generate_button.clicked.connect(self.generate_names) 
+
         self.toggle_button = QPushButton('Select All')
         self.toggle_button.clicked.connect(self.toggle_checkboxes)
 
+        self.reset_button = QPushButton('Reset Values')
+        self.reset_button.setToolTip('Resets values to defaults')
+        self.reset_button.clicked.connect(self.reset_values)
+
         self.about_button = QPushButton('About')
+        self.about_button.setToolTip('About the application')
         self.about_button.clicked.connect(self.about_message)
 
         self.quit_button = QPushButton('Quit')
+        self.quit_button.setToolTip('Exit application')
         self.quit_button.clicked.connect(QApplication.instance().quit)
-         
+
         self.clipboard_button = QPushButton('Copy as Text')
         self.clipboard_button.setToolTip('Copy selected names as text to clipboard')
         self.clipboard_button.clicked.connect(self.copy_to_clipboard)
@@ -109,148 +193,132 @@ class RanGenFantasyNames(QWidget):
         self.clipart_button.setToolTip('Copy selected names as an image to clipboard')
         self.clipart_button.clicked.connect(self.copy_to_clipart)
         
-        self.export_button = QPushButton('Export')
+        self.export_button = QPushButton('Export to CSV')
         self.export_button.setToolTip('Export selected names to a CSV file')
         self.export_button.clicked.connect(self.export_names)
-        
-        # create the buttons in a grid
+
+        # create a grid for the menu buttons
         button_layout = QGridLayout()
-        button_layout.addWidget(self.reroll_button, 0, 0)
-        button_layout.addWidget(self.toggle_button, 0, 1)
-        button_layout.addWidget(self.about_button, 0, 2)
+        button_layout.addWidget(self.generate_button, 0, 0)
+        button_layout.addWidget(self.about_button, 0, 1)
+        button_layout.addWidget(self.reset_button, 0, 2)
         button_layout.addWidget(self.quit_button, 0, 3)
-        
-        button_layout.addWidget(QLabel('Selected Names: '), 1, 0)
+
+        button_layout.addWidget(self.toggle_button, 1, 0)
         button_layout.addWidget(self.clipboard_button, 1, 1)
         button_layout.addWidget(self.clipart_button, 1, 2)
         button_layout.addWidget(self.export_button, 1, 3)
+
  
-        # create a grid for the name check and text boxes
+        # create a grid for the name check and text boxes and style settings
         check_text_layout = QGridLayout()
         self.name_text_box = {}
         self.name_check_box = {}
-        text_box_font = QFont("Consolas", 12)
-        text_box_font.setBold(True)
-        # create check and text boxes for each name
+        name_font = QFont('Consolas', 12, QFont.Bold)
+        # create check and text boxes for the number of names that can be generated at a time and place them in the grid
         for i in range(10):
-            box_id = f"{i+1}"          
+            box_id = f'{i+1}'          
             self.name_check_box[box_id] = QCheckBox()
             self.name_check_box[box_id].setChecked(False)
             check_text_layout.addWidget(self.name_check_box[box_id], i, 0)
             
             self.name_text_box[box_id] = QLineEdit()
-            self.name_text_box[box_id].setFont(text_box_font)
+            self.name_text_box[box_id].setFont(name_font)
             self.name_text_box[box_id].setReadOnly(True)
             check_text_layout.addWidget(self.name_text_box[box_id],i, 1)
- 
-        # create the footer in a horizontal box
-        foot_layout= QHBoxLayout()
-        self.foot_link = QLabel('RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a>')
-        self.foot_link.setOpenExternalLinks(True)
-        foot_layout.addWidget(self.foot_link, alignment=QtCore.Qt.AlignHCenter)
+            
+        # create user variable setting inputs for the GUI
+        settings_font = QFont()
+        settings_font.setPointSize(7)
+
+        # check box to toggle name split
+        self.name_splitter_check_box = QCheckBox('Split long names with:', self)
+        self.name_splitter_check_box.setFont(settings_font)
+        self.name_splitter_check_box.setChecked(True)
+        self.name_splitter_check_box.stateChanged.connect(self.set_var_name_splitter)
+        
+        # radio buttons to choose how names are split
+        self.splitter_char_radio_group = QButtonGroup()
+        self.splitter_char_radio1 = QRadioButton('Space')
+        self.splitter_char_radio_group.addButton(self.splitter_char_radio1)
+        self.splitter_char_radio2 = QRadioButton('Apostrophe')
+        self.splitter_char_radio_group.addButton(self.splitter_char_radio2)
+        self.splitter_char_radio3 = QRadioButton('Dash')
+        self.splitter_char_radio_group.addButton(self.splitter_char_radio3)
+        for radio_button in self.splitter_char_radio_group.buttons():
+            radio_button.setFont(settings_font)
+        self.splitter_char_radio_group.buttonClicked.connect(self.set_var_splitter_char)
+
+        # sliders for the syllable generation values
+        self.beg_cons_label = QLabel('Consonant more likely than Cluster/Nothing')
+        self.beg_cons_label.setFont(settings_font)
+        self.beg_cons_slider = QSlider(Qt.Horizontal)
+        self.beg_cons_slider.setMinimum(0)
+        self.beg_cons_slider.setMaximum(100)
+        self.beg_cons_slider.valueChanged.connect(self.set_var_beg_cons_prob)
+
+        self.beg_cluster_label = QLabel('Cluster more likely than Nothing')
+        self.beg_cluster_label.setFont(settings_font)
+        self.beg_cluster_slider = QSlider(Qt.Horizontal)
+        self.beg_cluster_slider.setMinimum(0)
+        self.beg_cluster_slider.setMaximum(100)
+        self.beg_cluster_slider.valueChanged.connect(self.set_var_beg_cluster_prob)
+
+        self.vowel_label = QLabel('Vowel more likely than Diphthong')
+        self.vowel_label.setFont(settings_font)
+        self.vowel_slider = QSlider(Qt.Horizontal)
+        self.vowel_slider.setMinimum(0)
+        self.vowel_slider.setMaximum(100)
+        self.vowel_slider.valueChanged.connect(self.set_var_vowel_prob)
+
+        self.end_cons_label = QLabel('Consonant more likely than Cluster/Nothing')
+        self.end_cons_label.setFont(settings_font)
+        self.end_cons_slider = QSlider(Qt.Horizontal)
+        self.end_cons_slider.setMinimum(0)
+        self.end_cons_slider.setMaximum(100)
+        self.end_cons_slider.valueChanged.connect(self.set_var_end_cons_prob)
+
+        self.end_cluster_label = QLabel('Cluster more likely than Nothing')
+        self.end_cluster_label.setFont(settings_font)
+        self.end_cluster_slider = QSlider(Qt.Horizontal)
+        self.end_cluster_slider.setMinimum(0)
+        self.end_cluster_slider.setMaximum(100)
+        self.end_cluster_slider.valueChanged.connect(self.set_var_end_cluster_prob)
+    
+        # create a grid for the user settings inputs
+        user_settings_layout = QGridLayout()
+        user_settings_layout.addWidget(self.name_splitter_check_box, 0, 0)
+        user_settings_layout.addWidget(self.splitter_char_radio1, 0, 1)
+        user_settings_layout.addWidget(self.splitter_char_radio2, 0, 2)
+        user_settings_layout.addWidget(self.splitter_char_radio3, 0, 3)
+        
+        user_settings_layout2 = QGridLayout()
+        user_settings_layout2.addWidget(self.beg_cons_label, 0, 0)
+        user_settings_layout2.addWidget(self.beg_cons_slider, 0, 1)
+        
+        user_settings_layout2.addWidget(self.beg_cluster_label, 1, 0)
+        user_settings_layout2.addWidget(self.beg_cluster_slider, 1, 1)
+        
+        user_settings_layout2.addWidget(self.vowel_label, 2, 0)
+        user_settings_layout2.addWidget(self.vowel_slider, 2, 1)
+
+        user_settings_layout2.addWidget(self.end_cons_label, 3, 0)
+        user_settings_layout2.addWidget(self.end_cons_slider, 3, 1)
+        
+        user_settings_layout2.addWidget(self.end_cluster_label, 4, 0)
+        user_settings_layout2.addWidget(self.end_cluster_slider, 4, 1)
         
         # finalize the window display as a vertical box and set the window title
         main_layout = QVBoxLayout()
         main_layout.addLayout(button_layout)
         main_layout.addLayout(check_text_layout)
-        main_layout.addLayout(foot_layout)
+        main_layout.addLayout(user_settings_layout)
+        main_layout.addLayout(user_settings_layout2)
         self.setLayout(main_layout)
-        self.setWindowTitle('RanGen Fantasy Names 2.3')
-
-    # define how syllables are generated
-    def generate_syllable(self):
-        syllable = ''
-        prev_char = ''
-        # generate the first part of the syllable
-        if random.random() < 0.2:
-            # generate a beginning cluster
-            beginning_cluster = random.choice(self.beginning_clusters)
-            if len(syllable) > 0 and prev_char == syllable[-1]:
-                beginning_cluster = random.choice([b for b in self.beginning_clusters if b[0] != prev_char])
-            syllable += beginning_cluster
-            prev_char = beginning_cluster[-1]
-        else:
-            # generate a consonant or no consonant
-            if random.random() < 0.8:
-                consonant = random.choice(self.consonants)
-                if len(syllable) > 0 and prev_char == syllable[-1]:
-                    consonant = random.choice([c for c in self.consonants if c != prev_char])
-                syllable += consonant
-                prev_char = consonant[-1]
-        # generate the middle part of the syllable
-        if random.random() < 0.75:
-            # genearate a vowel
-            vowel = random.choice(self.vowels)
-            if len(syllable) > 0 and prev_char == syllable[-1]:
-                vowel = random.choice([v for v in self.vowels if v != prev_char])
-            syllable += vowel
-            prev_char = vowel[-1]
-        else:
-            # generate a diphthong
-            diphthong = random.choice(self.diphthongs)
-            if len(syllable) > 0 and prev_char == syllable[-1]:
-                diphthong = random.choice([d for d in self.diphthongs if d[0] != prev_char])
-            syllable += diphthong
-            prev_char = diphthong[-1]
-        # generate the last part of the syllable
-        if random.random() < 0.15:
-            # generate an ending cluster
-            ending_cluster = random.choice(self.ending_clusters)
-            if len(syllable) > 0 and prev_char == syllable[-1]:
-                ending_cluster = random.choice([e for e in self.ending_clusters if e[0] != prev_char])
-            syllable += ending_cluster
-            prev_char = ending_cluster[-1]
-        else:
-            # generate a consonant or no consonant
-            if random.random() < 0.6:
-                consonant = random.choice(self.consonants)
-                if len(syllable) > 0 and prev_char == syllable[-1]:
-                    consonant = random.choice([c for c in self.consonants if c != prev_char])
-                syllable += consonant
-                prev_char = consonant[-1]
-        return syllable
-
-    # generate a name based on the syllable generation rules
-    def generate_name(self):
-        name = ''
-        while True:
-            num_syllables = random.choices([1, 2, 3, 4], weights=[1, 3, 3, 2])[0] # this makes names with more than one syllable favored
-            syllables = [self.generate_syllable() for _ in range(num_syllables)]
-            name = ''.join(syllables)
-            # check if a single letter repeats itself too many times and regenrate the name if so
-            for i, letter in enumerate(name):
-                if i > 1 and letter == name[i-1] and letter == name[i-2]:
-                    name = ''
-                    break
-            # check if the name contains at least one consonant or cluster 
-            if any(c in self.consonants or c in self.beginning_clusters or c in self.ending_clusters for c in name):
-                break
-            # insert an apostrophe between syllables if there are more than a certain number of total letters generated
-        if len(''.join(syllables)) > 10:
-            i = random.randint(1, len(syllables) - 1)
-            syllables.insert(i, '\'')
-        name = ''.join(syllables)
-        return name.title()
-
-    # a function that when called generates names for all boxes
-    def generate_names(self):
-        for i in range(10):
-            box_id = f"{i+1}"   # create the box id numbers to be referenced
-            self.name_text_box[box_id].clear()  # clear each box
-            name = self.generate_name()
-            self.name_text_box[box_id].setText(name)    # apply the name to the line edit box
-    
-    # a function to only generate names for the boxes that are checked
-    def generate_selected_names(self):
-        for i in range(10):
-            box_id = f"{i+1}"
-            if not self.name_check_box[box_id].isChecked():
-                name = self.generate_name()
-                self.name_text_box[box_id].setText(name)
         
-# load the app. in an if statement so it doesn't break if called in another app
+# load the app using name=main
 if __name__ == '__main__':
-    # set the palette colors
+    # set the palette colors for the GUI
     palette = QPalette()
     palette.setColor(QPalette.Window, QColor('#d5a05a'))    # window background color
     palette.setColor(QPalette.WindowText, QColor('#000000'))    # window font color
@@ -263,7 +331,7 @@ if __name__ == '__main__':
     palette.setColor(QPalette.ToolTipText, QColor('#ffefe0'))   # tooltip font color
     palette.setColor(QPalette.BrightText, QColor('#ffefe0'))    # highlighted font color
     
-    # load the app
+    # set some other settings and run
     app = QApplication([])
     app.setStyle(QStyleFactory.create('Fusion'))
     app.setPalette(palette)

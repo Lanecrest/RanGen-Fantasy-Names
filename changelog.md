@@ -1,6 +1,7 @@
 # Change Log
 
 v3.0
+-
 -Split the syllable/name generation functions into their own module. "rangen_words" is now its own script and contains the functions for word generation. this can allow it to be easily imported into other projects. rangen_fantasy_names is now just the GUI front end that uses rangen_words to make 'fantasy names.'
 
 -Added ability for users to adjust many of the settings

@@ -27,7 +27,7 @@ One of the current options is to export your names to a CSV file. In the short t
 
 Road Map
 =
-rangen_words will be updated in the long term to allow things in the future like more character support or being able to tweak the letters themselves. In an eventual move to Qt6, the project may switch to pyside instead of pyqt, depending on what the landscape looks like at that time. 
+rangen_words will be updated in the long term to allow things in the future like more character support or being able to tweak the letters themselves. In an eventual move to Qt6, the project may switch to pyside instead of pyqt, depending on what the landscape looks like at that time. As more user defined settings are added, these will likely be moved into their own menu and the ability to export custom settings.
 
 Known Bugs
 -

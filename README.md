@@ -19,7 +19,7 @@ Screenshots
 =
 [Screenshots](/screenshots)
 
-![Alt text](/screenshots/v2_3_main.png?raw=true "Main Window")
+![Alt text](/screenshots/v3_0_main.png?raw=true "Main Window")
 
 CSV File
 =

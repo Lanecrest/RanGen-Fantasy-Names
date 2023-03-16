@@ -40,23 +40,23 @@ def rangen_syllable(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_
     return syllable
 
 # function to generate a name based on the syllable generation function
-def rangen_word(name_splitter=False, splitter_char='', beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob=0, end_cluster_prob=0):
-    name = ''
+def rangen_word(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob=0, end_cluster_prob=0, name_splitter=False, splitter_char='', max_syllables=0):
+    word = ''
     while True:
-        num_syllables = random.choices([1, 2, 3, 4], weights=[1, 4, 4, 2])[0]   # this makes names with more than one syllable favored, favoring two and three.
+        num_syllables = random.randint(1, int(max_syllables))
         syllables = [rangen_syllable(beg_cons_prob, beg_cluster_prob, vowel_prob, end_cons_prob, end_cluster_prob) for _ in range(num_syllables)]
-        name = ''.join(syllables)
-        # check if a single letter repeats itself too many times and regenrate the name if so
-        for i, letter in enumerate(name):
-            if i > 1 and letter == name[i-1] and letter == name[i-2]:
+        word = ''.join(syllables)
+        # check if a single letter repeats itself too many times and regenrate the word if so
+        for i, letter in enumerate(word):
+            if i > 1 and letter == word[i-1] and letter == word[i-2]:
                 name = ''
                 break
-        # check if the name contains at least one consonant or cluster so a name that is only vowels isn't generated
-        if any(c in consonants or c in beginning_clusters or c in ending_clusters for c in name):
+        # check if the word contains at least one consonant or cluster so a word that is only vowels isn't generated
+        if any(c in consonants or c in beginning_clusters or c in ending_clusters for c in word):
             break
     # insert an apostrophe between syllables if there are more than a certain number of total letters generated
-    if len(name) > 10 and name_splitter:
+    if len(word) > 10 and name_splitter:
         i = random.randint(1, len(syllables) - 1)
         syllables.insert(i, splitter_char)
-        name = ''.join(syllables)
-    return name
+        word = ''.join(syllables)
+    return word

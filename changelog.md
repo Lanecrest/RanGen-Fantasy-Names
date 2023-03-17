@@ -6,7 +6,7 @@ v3.1.1 (03-16-23)
 
 -A couple of minor tweaks to presentation
 
--All new releases will be date stamped going forward. Exact times and dates of most of the previous releases were not recorded but version 1.0 was relased on 3-9-23
+-All new releases will be date stamped going forward. Exact times and dates of the 2.0 releases were not recorded but version 1.0 was relased on 3-9-23
 
 v3.1 (03-16-23)
 -
@@ -16,7 +16,7 @@ v3.1 (03-16-23)
 
 -Changed the ui a bit to account for the more user settings options
 
-v3.0
+v3.0 (03-15-23)
 -
 -Split the syllable/name generation functions into their own module. "rangen_words" is now its own script and contains the functions for word generation. this can allow it to be easily imported into other projects. rangen_fantasy_names is now just the GUI front end that uses rangen_words to make 'fantasy names.'
 

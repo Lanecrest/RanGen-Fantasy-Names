@@ -40,7 +40,7 @@ def rangen_syllable(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_
     return syllable
 
 # function to generate a name based on the syllable generation function
-def rangen_word(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob=0, end_cluster_prob=0, name_splitter=False, splitter_char='', max_syllables=0):
+def rangen_word(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob=0, end_cluster_prob=0, word_splitter=False, splitter_char='', max_syllables=0):
     word = ''
     while True:
         num_syllables = random.randint(1, int(max_syllables))
@@ -55,7 +55,7 @@ def rangen_word(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob
         if any(c in consonants or c in beginning_clusters or c in ending_clusters for c in word):
             break
     # insert an apostrophe between syllables if there are more than a certain number of total letters generated
-    if len(word) > 10 and name_splitter:
+    if len(word) > 10 and word_splitter:
         i = random.randint(1, len(syllables) - 1)
         syllables.insert(i, splitter_char)
         word = ''.join(syllables)

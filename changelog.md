@@ -1,10 +1,12 @@
 # Change Log
 
-v3.1.1
+v3.1.1 (03-16-23)
 -
 -Fixed a bug with slider values that caused the program to crash
 
 -A couple of minor tweaks to presentation
+
+-All new releases will be date stamped going forward. Exact times and dates of most of the previous releases were not recorded but version 1.0 was relased on 3-9-23
 
 v3.1
 -
@@ -76,6 +78,6 @@ v2.0
 
 -Can copy text out of the text box or copy as image for easy sharing
 
-v1.0
+v1.0 (03-09-23)
 -
 -Initial release, runs in console

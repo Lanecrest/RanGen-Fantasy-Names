@@ -1,6 +1,6 @@
 # Change Log
 
-v3.11
+v3.1.1
 -
 -Fixed a bug with slider values that caused the program to crash
 

@@ -9,7 +9,7 @@ class RanGenFantasyNames(QWidget):
     # initialize the app and call some starting functions
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('RanGen Fantasy Names 3.11')
+        self.setWindowTitle('RanGen Fantasy Names 3.1.1')
         self.max_syllables_range = 6
         self.init_ui()
         self.reset_values()

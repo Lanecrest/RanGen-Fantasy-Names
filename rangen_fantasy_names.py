@@ -9,7 +9,7 @@ class RanGenFantasyNames(QWidget):
     # initialize the app and call some starting functions
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('RanGen Fantasy Names 3.1')
+        self.setWindowTitle('RanGen Fantasy Names 3.11')
         self.max_syllables_range = 6
         self.init_ui()
         self.reset_values()
@@ -98,7 +98,7 @@ class RanGenFantasyNames(QWidget):
             writer = csv.writer(csv_file)
             for name in checked_name_boxes:
                 writer.writerow([name])
-        QMessageBox.information(self, 'Export', 'Selected names have been exported to the file.')
+        QMessageBox.information(self, 'Export', 'Selected names have been exported to ' + file_path)
 
     # function to toggle check boxes
     def toggle_checkboxes(self):
@@ -167,6 +167,7 @@ class RanGenFantasyNames(QWidget):
         self.generate_button.clicked.connect(self.generate_names) 
 
         self.toggle_button = QPushButton('Select All')
+        self.toggle_button.setToolTip('Select or deselect all check boxes')
         self.toggle_button.clicked.connect(self.toggle_checkboxes)
 
         self.reset_button = QPushButton('Reset Values')
@@ -270,35 +271,35 @@ class RanGenFantasyNames(QWidget):
         self.beg_cons_label = QLabel('Beginning Consonant more likely than Cluster/Nothing: ')
         self.beg_cons_label.setFont(settings_font)
         self.beg_cons_slider = QSlider(Qt.Horizontal)
-        self.beg_cons_slider.setMinimum(0)
+        self.beg_cons_slider.setMinimum(1)
         self.beg_cons_slider.setMaximum(100)
         self.beg_cons_slider.valueChanged.connect(self.set_var_beg_cons_prob)
 
         self.beg_cluster_label = QLabel('Beginning Cluster more likely than Nothing: ')
         self.beg_cluster_label.setFont(settings_font)
         self.beg_cluster_slider = QSlider(Qt.Horizontal)
-        self.beg_cluster_slider.setMinimum(0)
+        self.beg_cluster_slider.setMinimum(1)
         self.beg_cluster_slider.setMaximum(100)
         self.beg_cluster_slider.valueChanged.connect(self.set_var_beg_cluster_prob)
 
         self.vowel_label = QLabel('Vowel more likely than Diphthong: ')
         self.vowel_label.setFont(settings_font)
         self.vowel_slider = QSlider(Qt.Horizontal)
-        self.vowel_slider.setMinimum(0)
+        self.vowel_slider.setMinimum(1)
         self.vowel_slider.setMaximum(100)
         self.vowel_slider.valueChanged.connect(self.set_var_vowel_prob)
 
         self.end_cons_label = QLabel('Ending Consonant more likely than Cluster/Nothing: ')
         self.end_cons_label.setFont(settings_font)
         self.end_cons_slider = QSlider(Qt.Horizontal)
-        self.end_cons_slider.setMinimum(0)
+        self.end_cons_slider.setMinimum(1)
         self.end_cons_slider.setMaximum(100)
         self.end_cons_slider.valueChanged.connect(self.set_var_end_cons_prob)
 
         self.end_cluster_label = QLabel('Ending Cluster more likely than Nothing: ')
         self.end_cluster_label.setFont(settings_font)
         self.end_cluster_slider = QSlider(Qt.Horizontal)
-        self.end_cluster_slider.setMinimum(0)
+        self.end_cluster_slider.setMinimum(1)
         self.end_cluster_slider.setMaximum(100)
         self.end_cluster_slider.valueChanged.connect(self.set_var_end_cluster_prob)
         

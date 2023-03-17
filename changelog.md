@@ -1,5 +1,11 @@
 # Change Log
 
+v3.11
+-
+-Fixed a bug with slider values that caused the program to crash
+
+-A couple of minor tweaks to presentation
+
 v3.1
 -
 -Added ability to choose the maximum number of syllables that can generate for each name (updated rangen_words to support this as a feature of the core module).

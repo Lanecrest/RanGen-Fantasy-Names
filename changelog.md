@@ -8,7 +8,7 @@ v3.1.1 (03-16-23)
 
 -All new releases will be date stamped going forward. Exact times and dates of most of the previous releases were not recorded but version 1.0 was relased on 3-9-23
 
-v3.1
+v3.1 (03-16-23)
 -
 -Added ability to choose the maximum number of syllables that can generate for each name (updated rangen_words to support this as a feature of the core module).
 

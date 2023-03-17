@@ -46,7 +46,7 @@ class RanGenFantasyNames(QWidget):
                     vowel_prob=self.var_vowel_prob,
                     end_cons_prob=self.var_end_cons_prob,
                     end_cluster_prob=self.var_end_cluster_prob,
-                    name_splitter=self.var_name_splitter,
+                    word_splitter=self.var_name_splitter,
                     splitter_char=self.var_splitter_char,
                     max_syllables=self.var_max_syllables
                 )

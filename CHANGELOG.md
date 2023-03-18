@@ -10,7 +10,7 @@ v3.2 (03-18-23)
 
 -Settings can now be exported to a JSON config file and the program will use those settings if present. The config file will be automatically generated with system default settings if it doesn't exist, and you can reset your custom settings to the default settings if you wish. Most importantly, this allows you to keep settings you like so they will be saved between instances of running the program. If the config file is ever corrupt or missing values, it will try to rebuild parts or the entire of the file with the system defaults
 
--Errors with the config and the CSV file will now be printed in the console
+-Errors with the config and the CSV file will now be printed in the console in addition to any outputs in the GUI
 
 v3.1.1 (03-16-23)
 -

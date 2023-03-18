@@ -4,7 +4,7 @@ v3.2 (03-18-23)
 -
 -Replaced most of the buttons with a file menu system which includes shortcut keys
 
--When copying to clipboard, the selected names will now be printed in the console
+-When copying to clipboard, the selected names will now also be printed in the console so you see whats been copied before pasting
 
 -Optimized parts of the code to make sweeping changes less painful in the future
 

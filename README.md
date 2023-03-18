@@ -23,6 +23,7 @@ Requirements
 
 JSON Config
 =
+The config is a JSON file and will save custom settings. The program will automatically generate this file with the system defaults as the custom settings if the file doesn't exist. You can save current settings in the program which will update the config file, so those settings will be reloaded the next time you run the program. If the file is ever corrupted, it will either rebuild the entire file with default settings, or parts of the file with default settings depending on what kind of errors arise.
 
 CSV File
 =

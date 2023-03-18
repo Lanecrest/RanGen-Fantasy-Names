@@ -12,9 +12,11 @@ v3.1 (03-16-23)
 -
 -Added ability to choose the maximum number of syllables that can generate for each name (updated rangen_words to support this as a feature of the core module).
 
+-As a side effect, for now there is no weight distribution to the number of syllables that will generate. This may be added back in the future.
+
 -Fixed some references in code to other parts of code including commits that was missed in the 3.0 update
 
--Changed the ui a bit to account for the more user settings options
+-Changed the UI a bit to account for the more user settings options
 
 v3.0 (03-15-23)
 -
@@ -31,13 +33,13 @@ v2.3
 -
 -Removed possibility for a letter to repeat itself more than twice in a row (maybe)
 
--Chananged split names to have an apostrophe instead of a space.
+-Changed split names to have an apostrophe instead of a space.
 
 -Updated pixmap spacing when copy as image
 
 -Updated gui to better align widgets
 
-v2.25
+v2.2.5
 -
 -Added an export function. This will export selected names to a .csv file and will append names if names already exist
 

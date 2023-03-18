@@ -1,5 +1,17 @@
 # Change Log
 
+v3.2 (03-18-23)
+-
+-Replaced most of the buttons with a file menu system which includes shortcut keys
+
+-When copying to clipboard, the selected names will now be printed in the console
+
+-Optimized parts of the code to make sweeping changes less painful in the future
+
+-Settings can now be exported to a JSON config file and the program will use those settings if present. The config file will be automatically generated with system default settings if it doesn't exist, and you can reset your custom settings to the default settings if you wish. Most importantly, this allows you to keep settings you like so they will be saved between instances of running the program. If the config file is ever corrupt or missing values, it will try to rebuild parts or the entire of the file with the system defaults
+
+-Errors with the config and the CSV file will now be printed in the console
+
 v3.1.1 (03-16-23)
 -
 -Fixed a bug with slider values that caused the program to crash

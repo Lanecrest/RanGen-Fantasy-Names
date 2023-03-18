@@ -1,0 +1,1 @@
+{"custom_config": {"var_beg_cons_prob": 0.8, "var_beg_cluster_prob": 0.2, "var_vowel_prob": 0.75, "var_end_cons_prob": 0.6, "var_end_cluster_prob": 0.15, "var_name_splitter": true, "var_splitter_char": " ", "var_max_syllables": 4}}

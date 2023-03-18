@@ -54,7 +54,7 @@ def rangen_word(beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0, end_cons_prob
         # check if the word contains at least one consonant or cluster so a word that is only vowels isn't generated
         if any(c in consonants or c in beginning_clusters or c in ending_clusters for c in word):
             break
-    # insert an apostrophe between syllables if there are more than a certain number of total letters generated
+    # insert a character between syllables if there are more than a certain number of total letters generated
     if len(word) > 10 and word_splitter:
         i = random.randint(1, len(syllables) - 1)
         syllables.insert(i, splitter_char)

@@ -1,7 +1,7 @@
 from rangen_words import rangen_word
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMainWindow, QStyleFactory, QAction, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QSlider, QLineEdit, QMessageBox, QSpinBox, QCheckBox, QButtonGroup, QRadioButton, QFileDialog, QDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMainWindow, QStyleFactory, QAction, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QSlider, QLineEdit, QMessageBox, QSpinBox, QCheckBox, QButtonGroup, QRadioButton, QFileDialog
 from PyQt5.QtGui import QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen
 import os, json, csv
 

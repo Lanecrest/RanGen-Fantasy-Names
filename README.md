@@ -15,7 +15,7 @@ Screenshots
 =
 [Screenshots](/screenshots)
 
-![Alt text](/screenshots/v3_2_main.png?raw=true "Main Window")
+![Alt text](/screenshots/v3_3_main.png?raw=true "Main Window")
 
 Requirements
 =

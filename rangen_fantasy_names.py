@@ -1,37 +1,41 @@
 from rangen_words import rangen_word
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMainWindow, QStyleFactory, QAction, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QSlider, QLineEdit, QMessageBox, QCheckBox, QRadioButton, QButtonGroup, QFileDialog
-from PyQt5.QtGui import QKeySequence, QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMainWindow, QStyleFactory, QAction, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton, QSlider, QLineEdit, QMessageBox, QSpinBox, QCheckBox, QButtonGroup, QRadioButton, QFileDialog, QDialog
+from PyQt5.QtGui import QFont, QFontMetrics, QPalette, QPixmap, QPainter, QColor, QPen
 import os, json, csv
 
 class RanGenFantasyNames(QMainWindow):
-    # initialize the app and call some starting functions and universal hardcoded values
+    # function to initialize the app and define some universal hardcoded values for the GUI and run some startup functions
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('RanGen Fantasy Names 3.2')
-        self.max_syllables_range = 6    # change the selectable range of syllable generation options
-        self.generate_names_range = 10  # change the number of names that are printed in the GUI
-        self.slider_min = 1 # change the minimum value for the slider bar settings
-        self.slider_max = 100   # change the maximum value for the slider bar settings
-        self.name_font = QFont('Consolas', 12, QFont.Bold) # change how the names are displayed including copy as image
-        self.init_ui()
+        self.setWindowTitle('RanGen Fantasy Names 3.3')
+        self.generate_names_range = 10  # change the number of names that are printed at a time
+        self.max_syllables_min = 1 # change the minimum value for the syllable spin box
+        self.max_syllables_max = 6 # change the maxmimum value for the syllable spin box
+        self.name_long_min = 4 # change the minimum value for the name length spin box
+        self.name_long_max = 12 # change the maxmimum value for the name length spin box
+        self.prob_slider_min = 0 # change the minimum value for the probability slider bars
+        self.prob_slider_max = 100   # change the maximum value for the probability slider bars
+        self.name_font = QFont('Consolas', 12, QFont.Bold) # change how the names are displayed including for copy as image
         self.json_config()
+        self.draw_gui()
         self.reset_values()
         self.generate_names()
         
     # function to handle json config file
     def json_config(self):
-        # these are the default values for the app
+        # these are the default values for the program
         self.system_config = {
             "var_beg_cons_prob": 0.8,
             "var_beg_cluster_prob": 0.2,
             "var_vowel_prob": 0.75,
             "var_end_cons_prob": 0.6,
             "var_end_cluster_prob": 0.15,
-            "var_name_splitter": True,
-            "var_splitter_char": " ",
-            "var_max_syllables": 4
+            "var_max_syllables": 4,
+            "var_name_split": True,
+            "var_split_char": " ",
+            "var_name_long": 10            
         }
         # create config file if it doesn't exist with the system default values
         if not os.path.exists('config.json'):
@@ -60,46 +64,37 @@ class RanGenFantasyNames(QMainWindow):
             with open('config.json', 'w') as f:
                 json.dump(config, f)
 
-    # function to reset the values to default and used for initialization
+    # function to reset the values to defaults as defined by user
     def reset_values(self):
         # load user_config from json config to set defaults
         with open('config.json', 'r') as f:
             config = json.load(f)
-            self.var_beg_cons_prob = config['custom_config']['var_beg_cons_prob']
-            self.var_beg_cluster_prob = config['custom_config']['var_beg_cluster_prob']
-            self.var_vowel_prob = config['custom_config']['var_vowel_prob']
-            self.var_end_cons_prob = config['custom_config']['var_end_cons_prob']
-            self.var_end_cluster_prob = config['custom_config']['var_end_cluster_prob']
-            self.var_name_splitter = config['custom_config']['var_name_splitter']
-            self.var_splitter_char = config['custom_config']['var_splitter_char']
-            self.var_max_syllables = config['custom_config']['var_max_syllables']
-        # update the GUI to reflect the defaults
+            for key in config['custom_config']:
+                value = config['custom_config'][key]
+                setattr(self, key, value)
+
+        # update the GUI to reflect the default settings
         self.beg_cons_slider.setValue(int(self.var_beg_cons_prob * 100))
         self.beg_cluster_slider.setValue(int(self.var_beg_cluster_prob * 100))
         self.vowel_slider.setValue(int(self.var_vowel_prob * 100))
         self.end_cons_slider.setValue(int(self.var_end_cons_prob * 100))
         self.end_cluster_slider.setValue(int(self.var_end_cluster_prob * 100))
-        self.name_splitter_check_box.setChecked(self.var_name_splitter)
-        if self.var_splitter_char == ' ':
-            self.splitter_char_radio1.setChecked(True)
-        elif self.var_splitter_char == '\'':
-            self.splitter_char_radio2.setChecked(True)
-        elif self.var_splitter_char == '-':
-            self.splitter_char_radio3.setChecked(True)
-        self.max_syllables_radio[str(self.var_max_syllables)].setChecked(True)
-
+        self.max_syllables_spin_box.setValue(self.var_max_syllables)
+        self.name_split_check_box.setChecked(self.var_name_split)
+        if self.var_split_char == ' ':
+            self.split_char_radio1.setChecked(True)
+        elif self.var_split_char == '\'':
+            self.split_char_radio2.setChecked(True)
+        elif self.var_split_char == '-':
+            self.split_char_radio3.setChecked(True)
+        self.name_long_spin_box.setValue(self.var_name_long)
+        
     # function to update the config file with the current values
     def save_config(self):
         with open('config.json', 'r') as f:
             config = json.load(f)
-        config['custom_config']['var_beg_cons_prob'] = self.var_beg_cons_prob
-        config['custom_config']['var_beg_cluster_prob'] = self.var_beg_cluster_prob
-        config['custom_config']['var_vowel_prob'] = self.var_vowel_prob
-        config['custom_config']['var_end_cons_prob'] = self.var_end_cons_prob
-        config['custom_config']['var_end_cluster_prob'] = self.var_end_cluster_prob
-        config['custom_config']['var_name_splitter'] = self.var_name_splitter
-        config['custom_config']['var_splitter_char'] = self.var_splitter_char
-        config['custom_config']['var_max_syllables'] = int(self.var_max_syllables)
+        for key in config['custom_config']:
+            config['custom_config'][key] = getattr(self, key)
         with open('config.json', 'w') as f:
             json.dump(config, f)
             
@@ -121,9 +116,10 @@ class RanGenFantasyNames(QMainWindow):
                     vowel_prob=self.var_vowel_prob,
                     end_cons_prob=self.var_end_cons_prob,
                     end_cluster_prob=self.var_end_cluster_prob,
-                    word_splitter=self.var_name_splitter,
-                    splitter_char=self.var_splitter_char,
-                    max_syllables=self.var_max_syllables
+                    max_syllables=self.var_max_syllables,
+                    split_char=self.var_split_char,
+                    word_split=self.var_name_split,
+                    word_long=self.var_name_long                    
                 )
                 self.name_text_box[box_id].setText(name.title())  
         
@@ -192,65 +188,95 @@ class RanGenFantasyNames(QMainWindow):
         for i in range(1, self.generate_names_range+1):
             self.name_check_box[f'{i}'].setChecked(False)
 
-    # function for about message box dialog
+    # function for about message box
     def about_message(self):
-        message_box = QMessageBox()
-        message_box.setWindowTitle('About')
-        message_box.setText(
+        about_box = QMessageBox()
+        about_box.setWindowTitle('About')
+        about_box.setText(
             '<p>RanGen Fantasy Names procedurally generates names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
             '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>'
             '<p>Use the settings at the bottom of the interface to adjust values. You can toggle whether long names will be split somewhere randomly and choose the symbol that splits them. You can also adjust the frequency of consonants, clusters, vowels, diphthongs, etc. These values will effect every syllable a name contains, which is another setting you can adjust to determine the maximum number of syllables a name can have.</p>'
             '<p>You can save your custom settings to a JSON file via the menu. Resetting the values will reset all of the values to your custom defaults. You can also reset the settings back the the system defaults via the menu. If you modify the JSON file directly, the entire file will be rebuilt if it contains any errors.</p>'
             '<p align="center">RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a></p>'
             )
-        message_box.setStandardButtons(QMessageBox.Ok)
-        message_box.exec_()
+        about_box.setStandardButtons(QMessageBox.Ok)
+        about_box.exec_()
+     
+    # function to determine the maximum number of syllables a word can generate with
+    def set_var_max_syllables(self, value):
+        self.var_max_syllables = value
      
     # function to toggle whether long names will have a split in them
-    def set_var_name_splitter(self, state):
-        self.var_name_splitter = state == Qt.Checked
+    def set_var_name_split(self, state):
+        self.var_name_split = state == Qt.Checked
         
     # function to set what character splits the names
-    def set_var_splitter_char(self, button):
-        if button == self.splitter_char_radio1:
-            self.var_splitter_char = ' '
-        elif button == self.splitter_char_radio2:
-            self.var_splitter_char = '\''
-        elif button == self.splitter_char_radio3:
-            self.var_splitter_char = '-'
+    def set_var_split_char(self, button):
+        if button == self.split_char_radio1:
+            self.var_split_char = ' '
+        elif button == self.split_char_radio2:
+            self.var_split_char = '\''
+        elif button == self.split_char_radio3:
+            self.var_split_char = '-'
+            
+    # function to determine the how lang a name should be before it would be split
+    def set_var_name_long(self, value):
+        self.var_name_long = value
             
     # functions to set the syllable generation values
     def set_var_beg_cons_prob(self, value):
-            self.var_beg_cons_prob = value / 100
+        self.var_beg_cons_prob = value / 100
+        current_label = self.beg_cons_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}%'
+        self.beg_cons_label.setText(new_label)
 
     def set_var_beg_cluster_prob(self, value):
-            self.var_beg_cluster_prob = value / 100
+        self.var_beg_cluster_prob = value / 100
+        current_label = self.beg_cluster_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}%'
+        self.beg_cluster_label.setText(new_label)
 
     def set_var_vowel_prob(self, value):
-            self.var_vowel_prob = value / 100
+        self.var_vowel_prob = value / 100
+        current_label = self.vowel_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}%'
+        self.vowel_label.setText(new_label)
 
     def set_var_end_cons_prob(self, value):
-            self.var_end_cons_prob = value / 100
+        self.var_end_cons_prob = value / 100
+        current_label = self.end_cons_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}%'
+        self.end_cons_label.setText(new_label)
 
     def set_var_end_cluster_prob(self, value):
-            self.var_end_cluster_prob = value / 100
-            
-    def set_var_max_syllables(self, button):
-        for i in range(self.max_syllables_range):
-            radio_id = f'{i+1}' 
-            if button == self.max_syllables_radio[radio_id]:
-                self.var_max_syllables = radio_id
+        self.var_end_cluster_prob = value / 100
+        current_label = self.end_cluster_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}%'
+        self.end_cluster_label.setText(new_label)
 
     # function to define the GUI and its widgets
-    def init_ui(self):
+    def draw_gui(self):
         # create a file menu
         menu_bar = self.menuBar()
-        main_display = QWidget(self)    # assign all widgets outside the menu to a single value to be pulled as a central widget for the display
+        menu_bar_style = """
+            QMenuBar {
+                background-color: #ffefe0;
+                color: #000000;
+            }    
+            QMenuBar::item:selected {
+                background-color: #d5a05a;
+                color: #ffefe0;
+            }
+            QMenuBar::item:hover {
+                background-color: #d5a05a;
+                color: #ffefe0;
+            }
+        """    
+        menu_bar.setStyleSheet(menu_bar_style)
         
         file_menu = menu_bar.addMenu('File')
         self.generate_action = QAction('Generate Names', self)
         self.generate_action.triggered.connect(self.generate_names)
-        self.generate_action.setShortcut('Ctrl+G')
         file_menu.addAction(self.generate_action)       
         
         file_menu.addSeparator()
@@ -266,17 +292,17 @@ class RanGenFantasyNames(QMainWindow):
         
         file_menu.addSeparator()
         self.about_action = QAction('About', self)
-        self.about_action.setShortcut('Ctrl+H')
+        self.about_action.setShortcut('F1')
         self.about_action.triggered.connect(self.about_message)
         file_menu.addAction(self.about_action)      
         
         file_menu.addSeparator()
         self.quit_action = QAction('Quit', self)
         self.quit_action.triggered.connect(QApplication.instance().quit)
-        self.quit_action.setShortcut('Ctrl+Q')
+        self.quit_action.setShortcut('Alt+F4')
         file_menu.addAction(self.quit_action)
         
-        settings_menu = menu_bar.addMenu('Settings')
+        settings_menu = menu_bar.addMenu('Settings')        
         self.values_action = QAction('Reset Values', self)
         self.values_action.triggered.connect(self.reset_values)
         self.values_action.setShortcut('Ctrl+R')
@@ -301,7 +327,7 @@ class RanGenFantasyNames(QMainWindow):
 
         self.clipart_action = QAction('Copy as Image', self)
         self.clipart_action.triggered.connect(self.copy_to_clipart)
-        self.clipart_action.setShortcut('Ctrl+E')
+        self.clipart_action.setShortcut('Ctrl+Alt+C')
         export_menu.addAction(self.clipart_action)
         
         export_menu.addSeparator()
@@ -310,14 +336,17 @@ class RanGenFantasyNames(QMainWindow):
         self.export_action.setShortcut('Ctrl+P')
         export_menu.addAction(self.export_action)       
         
-        # create buttons for app menus
+        # create widgets for the main display
+        main_display = QWidget(self)
+        
+        # button to roll names (there is also a file menu option but buttons are satisfying)
+        button_layout = QHBoxLayout()
         self.generate_button = QPushButton('Roll')
         self.generate_button.setToolTip('Generate names for unchecked fields')
-        self.generate_button.clicked.connect(self.generate_names) 
-        button_layout = QHBoxLayout()
+        self.generate_button.clicked.connect(self.generate_names)         
         button_layout.addWidget(self.generate_button)
  
-        # create a grid for the name check and text boxes and style settings
+        # create a grid for the name check and text boxes and style settings for main output display
         check_text_layout = QGridLayout()
         self.name_text_box = {}
         self.name_check_box = {}
@@ -337,82 +366,88 @@ class RanGenFantasyNames(QMainWindow):
         settings_font = QFont()
         settings_font.setPointSize(7)   # affects font size used for settings text across the board
 
-        # radio buttons to choose the maximum number of syllables that can generate
+        # spin box to choose the maximum number of syllables that can generate
         user_settings_syllables = QHBoxLayout()
-        self.max_syllables_label = QLabel('Maximum syllables to generate: ')
+        self.max_syllables_label = QLabel(f'Maximum syllables to generate: {self.max_syllables_min} - {self.max_syllables_max}')
         self.max_syllables_label.setFont(settings_font)
+        self.max_syllables_spin_box = QSpinBox()
+        self.max_syllables_spin_box.setMinimum(self.max_syllables_min)
+        self.max_syllables_spin_box.setMaximum(self.max_syllables_max)
+        self.max_syllables_spin_box.valueChanged.connect(self.set_var_max_syllables)
         user_settings_syllables.addWidget(self.max_syllables_label)
-        self.max_syllables_radio = {}
-        self.max_syllables_radio_group = QButtonGroup()
-        for i in range(self.max_syllables_range):
-            radio_id = f'{i+1}'          
-            self.max_syllables_radio[radio_id] = QRadioButton(radio_id)
-            self.max_syllables_radio_group.addButton(self.max_syllables_radio[radio_id])
-            user_settings_syllables.addWidget(self.max_syllables_radio[radio_id])
-        for radio_button in self.max_syllables_radio_group.buttons():
+        user_settings_syllables.addWidget(self.max_syllables_spin_box)
+
+        # check box to determine if a name can be split and radio buttons to choose the character to use as the split
+        user_settings_split = QHBoxLayout()
+        self.name_split_check_box = QCheckBox('Split long names with: ', self)
+        self.name_split_check_box.setFont(settings_font)
+        self.name_split_check_box.setChecked(True)
+        self.name_split_check_box.stateChanged.connect(self.set_var_name_split)             
+        # the radio buttons
+        self.split_char_radio_group = QButtonGroup()
+        self.split_char_radio1 = QRadioButton('Space')
+        self.split_char_radio_group.addButton(self.split_char_radio1)
+        self.split_char_radio2 = QRadioButton('Apostrophe')
+        self.split_char_radio_group.addButton(self.split_char_radio2)
+        self.split_char_radio3 = QRadioButton('Dash')
+        self.split_char_radio_group.addButton(self.split_char_radio3)
+        for radio_button in self.split_char_radio_group.buttons():
             radio_button.setFont(settings_font)
-        self.max_syllables_radio_group.buttonClicked.connect(self.set_var_max_syllables)
+        self.split_char_radio_group.buttonClicked.connect(self.set_var_split_char)
+        user_settings_split.addWidget(self.name_split_check_box) 
+        user_settings_split.addWidget(self.split_char_radio1)
+        user_settings_split.addWidget(self.split_char_radio2)
+        user_settings_split.addWidget(self.split_char_radio3)
+        
+        # spin box to choose how long a name should be before it can split
+        user_settings_long = QHBoxLayout()
+        self.name_long_label = QLabel(f'Only split if the name has at least this many letters: {self.name_long_min} - {self.name_long_max}')
+        self.name_long_label.setFont(settings_font)
+        self.name_long_spin_box = QSpinBox()
+        self.name_long_spin_box.setMinimum(self.name_long_min)
+        self.name_long_spin_box.setMaximum(self.name_long_max)
+        self.name_long_spin_box.valueChanged.connect(self.set_var_name_long)
+        user_settings_long.addWidget(self.name_long_label)
+        user_settings_long.addWidget(self.name_long_spin_box)
+             
+        # sliders for the syllable generation values. labels are dynamically updated via the connect function calls
+        user_settings_probs = QVBoxLayout()
 
-        # check box and radio buttons to toggle name split and splitter char
-        self.name_splitter_check_box = QCheckBox('Split long names with:', self)
-        self.name_splitter_check_box.setFont(settings_font)
-        self.name_splitter_check_box.setChecked(True)
-        self.name_splitter_check_box.stateChanged.connect(self.set_var_name_splitter)        
-
-        self.splitter_char_radio_group = QButtonGroup()
-        self.splitter_char_radio1 = QRadioButton('Space')
-        self.splitter_char_radio_group.addButton(self.splitter_char_radio1)
-        self.splitter_char_radio2 = QRadioButton('Apostrophe')
-        self.splitter_char_radio_group.addButton(self.splitter_char_radio2)
-        self.splitter_char_radio3 = QRadioButton('Dash')
-        self.splitter_char_radio_group.addButton(self.splitter_char_radio3)
-        for radio_button in self.splitter_char_radio_group.buttons():
-            radio_button.setFont(settings_font)
-        self.splitter_char_radio_group.buttonClicked.connect(self.set_var_splitter_char)
-
-        user_settings_splitter = QHBoxLayout()        
-        user_settings_splitter.addWidget(self.name_splitter_check_box)
-        user_settings_splitter.addWidget(self.splitter_char_radio1)
-        user_settings_splitter.addWidget(self.splitter_char_radio2)
-        user_settings_splitter.addWidget(self.splitter_char_radio3)
-
-        # sliders for the syllable generation values
-        self.beg_cons_label = QLabel('Beginning Consonant more likely than Cluster/Nothing: ')
-        self.beg_cons_label.setFont(settings_font)
         self.beg_cons_slider = QSlider(Qt.Horizontal)
-        self.beg_cons_slider.setMinimum(self.slider_min)
-        self.beg_cons_slider.setMaximum(self.slider_max)
+        self.beg_cons_label = QLabel(f'Beginning Consonant more likely than Cluster/Nothing: 0%')
+        self.beg_cons_label.setFont(settings_font)
+        self.beg_cons_slider.setMinimum(self.prob_slider_min)
+        self.beg_cons_slider.setMaximum(self.prob_slider_max)
         self.beg_cons_slider.valueChanged.connect(self.set_var_beg_cons_prob)
 
-        self.beg_cluster_label = QLabel('Beginning Cluster more likely than Nothing: ')
-        self.beg_cluster_label.setFont(settings_font)
         self.beg_cluster_slider = QSlider(Qt.Horizontal)
-        self.beg_cluster_slider.setMinimum(self.slider_min)
-        self.beg_cluster_slider.setMaximum(self.slider_max)
+        self.beg_cluster_label = QLabel(f'Beginning Cluster more likely than Nothing: 0%')
+        self.beg_cluster_label.setFont(settings_font)
+        self.beg_cluster_slider.setMinimum(self.prob_slider_min)
+        self.beg_cluster_slider.setMaximum(self.prob_slider_max)
         self.beg_cluster_slider.valueChanged.connect(self.set_var_beg_cluster_prob)
 
-        self.vowel_label = QLabel('Vowel more likely than Diphthong: ')
-        self.vowel_label.setFont(settings_font)
         self.vowel_slider = QSlider(Qt.Horizontal)
-        self.vowel_slider.setMinimum(self.slider_min)
-        self.vowel_slider.setMaximum(self.slider_max)
+        self.vowel_label = QLabel(f'Vowel more likely than Diphthong: 0%')
+        self.vowel_label.setFont(settings_font)
+        self.vowel_slider.setMinimum(self.prob_slider_min)
+        self.vowel_slider.setMaximum(self.prob_slider_max)
         self.vowel_slider.valueChanged.connect(self.set_var_vowel_prob)
 
-        self.end_cons_label = QLabel('Ending Consonant more likely than Cluster/Nothing: ')
-        self.end_cons_label.setFont(settings_font)
         self.end_cons_slider = QSlider(Qt.Horizontal)
-        self.end_cons_slider.setMinimum(self.slider_min)
-        self.end_cons_slider.setMaximum(self.slider_max)
+        self.end_cons_label = QLabel(f'Ending Consonant more likely than Cluster/Nothing: 0%')
+        self.end_cons_label.setFont(settings_font)
+        self.end_cons_slider.setMinimum(self.prob_slider_min)
+        self.end_cons_slider.setMaximum(self.prob_slider_max)
         self.end_cons_slider.valueChanged.connect(self.set_var_end_cons_prob)
 
-        self.end_cluster_label = QLabel('Ending Cluster more likely than Nothing: ')
-        self.end_cluster_label.setFont(settings_font)
         self.end_cluster_slider = QSlider(Qt.Horizontal)
-        self.end_cluster_slider.setMinimum(self.slider_min)
-        self.end_cluster_slider.setMaximum(self.slider_max)
+        self.end_cluster_label = QLabel(f'Ending Cluster more likely than Nothing: 0%')
+        self.end_cluster_label.setFont(settings_font)
+        self.end_cluster_slider.setMinimum(self.prob_slider_min)
+        self.end_cluster_slider.setMaximum(self.prob_slider_max)
         self.end_cluster_slider.valueChanged.connect(self.set_var_end_cluster_prob)
-        
-        user_settings_probs = QVBoxLayout()
+
         user_settings_probs.addWidget(self.beg_cons_label)
         user_settings_probs.addWidget(self.beg_cons_slider)       
         user_settings_probs.addWidget(self.beg_cluster_label)
@@ -429,7 +464,8 @@ class RanGenFantasyNames(QMainWindow):
         main_layout.addLayout(button_layout)
         main_layout.addLayout(check_text_layout)
         main_layout.addLayout(user_settings_syllables)
-        main_layout.addLayout(user_settings_splitter)
+        main_layout.addLayout(user_settings_split)
+        main_layout.addLayout(user_settings_long)
         main_layout.addLayout(user_settings_probs)
         main_display.setLayout(main_layout)
         self.setCentralWidget(main_display)
@@ -453,9 +489,9 @@ if __name__ == '__main__':
     app = QApplication([])
     app.setStyle(QStyleFactory.create('Fusion'))
     app.setPalette(palette)
-    main_window = RanGenFantasyNames()
-    main_window.show()
-    frame = main_window.frameGeometry()
+    rangen_class = RanGenFantasyNames()
+    rangen_class.show()
+    frame = rangen_class.frameGeometry()
     frame.moveCenter(QDesktopWidget().availableGeometry().center())
-    main_window.move(frame.topLeft())
+    rangen_class.move(frame.topLeft())
     app.exec_()

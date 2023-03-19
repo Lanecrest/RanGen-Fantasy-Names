@@ -1,5 +1,17 @@
 # Change Log
 
+v3.3 (03-19-23)
+-
+-How long a name can be before it receives a split is now a user adjustable setting
+
+-Letter generation probabilities can now be set to 0, but if all the cononants are set to 0, no names will generate, as the program would get stuck in an infinite loop as it tries to generate a name with at least one consonant and vowel.
+
+-Added some more ending cluster pairings to the character set
+
+-Made the menu bar easier to be read and changed some of the shortcuts
+
+-Optimized the code for saving and resseting settings
+
 v3.2 (03-18-23)
 -
 -Replaced most of the buttons with a file menu system which includes shortcut keys

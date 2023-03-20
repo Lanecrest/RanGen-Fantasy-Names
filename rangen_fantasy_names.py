@@ -9,7 +9,7 @@ class RanGenFantasyNames(QMainWindow):
     # function to initialize the app and define some universal hardcoded values for the GUI and run some startup functions
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('RanGen Fantasy Names 3.3')
+        self.setWindowTitle('RanGen Fantasy Names')
         self.generate_names_range = 10  # change the number of names that are printed at a time
         self.max_syllables_min = 1 # change the minimum value for the syllable spin box
         self.max_syllables_max = 6 # change the maxmimum value for the syllable spin box
@@ -79,7 +79,7 @@ class RanGenFantasyNames(QMainWindow):
         self.vowel_slider.setValue(int(self.var_vowel_prob * 100))
         self.end_cons_slider.setValue(int(self.var_end_cons_prob * 100))
         self.end_cluster_slider.setValue(int(self.var_end_cluster_prob * 100))
-        self.max_syllables_spin_box.setValue(self.var_max_syllables)
+        self.max_syllables_slider.setValue(self.var_max_syllables)
         self.name_split_check_box.setChecked(self.var_name_split)
         if self.var_split_char == ' ':
             self.split_char_radio1.setChecked(True)
@@ -174,7 +174,7 @@ class RanGenFantasyNames(QMainWindow):
                     writer.writerow([name])
             text = '\n'.join(checked_name_boxes)
             print(f'The following names were exported to {file_path}: \n{text}')
-            QMessageBox.information(self, 'Export', f'Selected names have been exported to "{file_path}"')
+            QMessageBox.information(self, 'Export Success', f'Selected names have been exported to "{file_path}"')
         except Exception as e:
             print(f'Error exporting names: {e}')
             QMessageBox.critical(self, 'Export Error', f'Error exporting names: {e}')
@@ -191,12 +191,11 @@ class RanGenFantasyNames(QMainWindow):
     # function for about message box
     def about_message(self):
         about_box = QMessageBox()
-        about_box.setWindowTitle('About')
+        about_box.setWindowTitle('RanGen Fantasy Names 3.3.1')
         about_box.setText(
-            '<p>RanGen Fantasy Names procedurally generates names by joining up to four randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
-            '<p>Use the check boxes to select specific names you would like to work with. Selected names will also be ignored when rolling. You can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries.</p>'
-            '<p>Use the settings at the bottom of the interface to adjust values. You can toggle whether long names will be split somewhere randomly and choose the symbol that splits them. You can also adjust the frequency of consonants, clusters, vowels, diphthongs, etc. These values will effect every syllable a name contains, which is another setting you can adjust to determine the maximum number of syllables a name can have.</p>'
-            '<p>You can save your custom settings to a JSON file via the menu. Resetting the values will reset all of the values to your custom defaults. You can also reset the settings back the the system defaults via the menu. If you modify the JSON file directly, the entire file will be rebuilt if it contains any errors.</p>'
+            '<p>RanGen Fantasy Names procedurally generates names by joining together randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
+            '<p>The main display consists of randomly generated names based on the current settings. You can select names with the corresponding check box to prevent them from being re-rolled and you can also copy the selected names to your clipboard or export to a CSV file.</p>'
+            '<p>Under the generated names is the settings panel. You can adjust many of the settings and save them as your defaults, which is managed via a JSON config file. You can also reset the config to the system defaults.</p>'
             '<p align="center">RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a></p>'
             )
         about_box.setStandardButtons(QMessageBox.Ok)
@@ -205,6 +204,9 @@ class RanGenFantasyNames(QMainWindow):
     # function to determine the maximum number of syllables a word can generate with
     def set_var_max_syllables(self, value):
         self.var_max_syllables = value
+        current_label = self.max_syllables_label.text()
+        new_label = f'{current_label.split(":")[0]}: {value}'
+        self.max_syllables_label.setText(new_label)
      
     # function to toggle whether long names will have a split in them
     def set_var_name_split(self, state):
@@ -287,7 +289,7 @@ class RanGenFantasyNames(QMainWindow):
 
         self.deselect_action = QAction('Deselect All', self)
         self.deselect_action.triggered.connect(self.deselect_all)
-        self.deselect_action.setShortcut('Ctrl+Alt+A')
+        self.deselect_action.setShortcut('Ctrl+Shift+A')
         file_menu.addAction(self.deselect_action)
         
         file_menu.addSeparator()
@@ -316,7 +318,7 @@ class RanGenFantasyNames(QMainWindow):
         
         self.reset_action = QAction('Reset Config', self)
         self.reset_action.triggered.connect(self.reset_config)
-        self.reset_action.setShortcut('Ctrl+Alt+R')
+        self.reset_action.setShortcut('Ctrl+Shift+R')
         settings_menu.addAction(self.reset_action)
         
         export_menu = menu_bar.addMenu('Export')
@@ -327,7 +329,7 @@ class RanGenFantasyNames(QMainWindow):
 
         self.clipart_action = QAction('Copy as Image', self)
         self.clipart_action.triggered.connect(self.copy_to_clipart)
-        self.clipart_action.setShortcut('Ctrl+Alt+C')
+        self.clipart_action.setShortcut('Ctrl+Shift+C')
         export_menu.addAction(self.clipart_action)
         
         export_menu.addSeparator()
@@ -366,16 +368,17 @@ class RanGenFantasyNames(QMainWindow):
         settings_font = QFont()
         settings_font.setPointSize(7)   # affects font size used for settings text across the board
 
-        # spin box to choose the maximum number of syllables that can generate
+        # slider to choose the maximum number of syllables that can generate
         user_settings_syllables = QHBoxLayout()
-        self.max_syllables_label = QLabel(f'Maximum syllables to generate: {self.max_syllables_min} - {self.max_syllables_max}')
-        self.max_syllables_label.setFont(settings_font)
-        self.max_syllables_spin_box = QSpinBox()
-        self.max_syllables_spin_box.setMinimum(self.max_syllables_min)
-        self.max_syllables_spin_box.setMaximum(self.max_syllables_max)
-        self.max_syllables_spin_box.valueChanged.connect(self.set_var_max_syllables)
+        self.max_syllables_label = QLabel(f'Maximum syllables to generate: 1')
+        self.max_syllables_label.setFont(settings_font)        
+        self.max_syllables_slider = QSlider(Qt.Horizontal)
+        self.max_syllables_slider.setMinimum(self.max_syllables_min)
+        self.max_syllables_slider.setMaximum(self.max_syllables_max)
+        self.max_syllables_slider.valueChanged.connect(self.set_var_max_syllables)
         user_settings_syllables.addWidget(self.max_syllables_label)
-        user_settings_syllables.addWidget(self.max_syllables_spin_box)
+        user_settings_syllables.addWidget(self.max_syllables_slider)
+        
 
         # check box to determine if a name can be split and radio buttons to choose the character to use as the split
         user_settings_split = QHBoxLayout()
@@ -404,6 +407,7 @@ class RanGenFantasyNames(QMainWindow):
         self.name_long_label = QLabel(f'Only split if the name has at least this many letters: {self.name_long_min} - {self.name_long_max}')
         self.name_long_label.setFont(settings_font)
         self.name_long_spin_box = QSpinBox()
+        self.name_long_spin_box.setFixedWidth(75)
         self.name_long_spin_box.setMinimum(self.name_long_min)
         self.name_long_spin_box.setMaximum(self.name_long_max)
         self.name_long_spin_box.valueChanged.connect(self.set_var_name_long)

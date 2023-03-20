@@ -1,5 +1,11 @@
 # Change Log
 
+v3.3.1 (03-19-23)
+-
+-Changed some UI elements
+
+-Updated About menu
+
 v3.3 (03-19-23)
 -
 -How long a name can be before it receives a split is now a user adjustable setting

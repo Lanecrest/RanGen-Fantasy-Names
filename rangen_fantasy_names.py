@@ -379,7 +379,6 @@ class RanGenFantasyNames(QMainWindow):
         user_settings_syllables.addWidget(self.max_syllables_label)
         user_settings_syllables.addWidget(self.max_syllables_slider)
         
-
         # check box to determine if a name can be split and radio buttons to choose the character to use as the split
         user_settings_split = QHBoxLayout()
         self.name_split_check_box = QCheckBox('Split long names with: ', self)

@@ -25,13 +25,17 @@ JSON Config
 =
 The config is a JSON file and will save custom settings. The program will automatically generate this file with the system defaults as the custom settings if the file doesn't exist. You can save current settings in the program which will update the config file, so those settings will be reloaded the next time you run the program. If the file is ever corrupted, it will either rebuild the entire file with default settings, or parts of the file with default settings depending on what kind of errors arise.
 
+JSON Charset
+=
+The pre-packaged [charset file](rangen_charsets.json) is just an example of how you can define your own character sets. The program will always be able to use a default character set if you don't have a charset file or the charset file is corrupted. Any custom character sets will need to contain each of the 5 dictionaries (vowels, diphthongs, consonants, beginning_clusters, and ending_clusters) to work correctly but the names (such as Sample) in the pre-packaged file can be whatever you choose, as well as the letters inside each dictionary.
+
 CSV File
 =
 One of the current options is to export your names to a CSV file. In the short term, this is just so you can maintain a list of names you like as the names are appended to the file so it keeps track of all names you have exported in the past. In the long term the app may do more with this file as more features are added.
 
 Road Map
 =
-rangen_words will be updated in the long term to allow things in the future like more character support or being able to tweak the letters themselves. In an eventual move to Qt6, the project may switch to pyside instead of pyqt, depending on what the landscape looks like at that time. As more user defined settings are added, these will likely be moved into their own menu and the ability to export custom settings.
+The next update will likely provide the ability to work with the new settings window and the main window simultaneously and contain additional character sets in the charset json file. In a future update beyond that, the ability to create character set files through the GUI versus manipulating the json file directly might be implemented.
 
 Credits
 =

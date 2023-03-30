@@ -1,4 +1,4 @@
-# RanGen-Fantasy-Names
+# RanGen Fantasy Names
 
 RanGen Fantasy Names is a Python application that procedurally generates names by joining a number of randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions. It uses a custom module (rangen_words) as the back-end for name generation, and a GUI front-end using PyQt5.
 

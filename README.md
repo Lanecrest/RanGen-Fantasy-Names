@@ -2,9 +2,6 @@
 
 RanGen Fantasy Names is a Python application that procedurally generates names by joining a number of randomly generated syllables that are constructed following 'consonant-vowel-consonant' conventions. It uses a custom module (rangen_words) as the back-end for name generation, and a GUI front-end using PyQt5.
 
-[Change Log](CHANGELOG.md)
-=
-
 About
 =
 This application works by running a function to generate a syllable that is created using consonant-vowel-consonant conventions. It may randomly omit the starting or ending consonant, and can generate a cluster of consonants such as "ck" or "th" intead of a single consonant, or it can generate a diphthong such as "ie" or "oo" instead of a single vowel. It will then string together a number of these syllables to form the generated name.
@@ -15,6 +12,9 @@ While using the GUI, the check boxes are used to select specific names you would
 =
 ![Alt text](/screenshots/v4-0-0_main.png?raw=true "Main Window")
 ![Alt text](/screenshots/v4-0-0_settings.png?raw=true "Settings Window")
+
+[Change Log](CHANGELOG.md)
+=
 
 [Requirements](requirements.txt)
 =

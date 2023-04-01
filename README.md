@@ -37,7 +37,7 @@ The basic intended functions of the program have all been implemented. The next 
 
 Credits
 =
-Programmed by Lanecrest Tech © 2023
+Lanecrest Tech © 2023
 
 This program uses Qt Framework Essentials, specifically the PyQt5 binder from [Riverbank Computing](https://www.riverbankcomputing.com/)
 

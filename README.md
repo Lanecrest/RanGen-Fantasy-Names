@@ -11,10 +11,8 @@ This application works by running a function to generate a syllable that is crea
 
 While using the GUI, the check boxes are used to select specific names you would like to work with. Selected names will also be ignored when re-rolling. Currently, you can copy selected names to your clipboard either as text or as an image. You can also export the selected names to a CSV file which will be appended after any existing entries. Many of the settings can be set by the user via inputs and saved to a config file. The 'About' menu in the application will give more information.
 
-Screenshots
-=
 [Screenshots](/screenshots)
-
+=
 ![Alt text](/screenshots/v4-0-0_main.png?raw=true "Main Window")
 ![Alt text](/screenshots/v4-0-0_settings.png?raw=true "Settings Window")
 
@@ -23,7 +21,7 @@ Screenshots
 
 JSON Config
 =
-The config is a JSON file and will save custom settings. The program will only generate this file if you ever choose to save your settings. You can save current settings in the program which will update the config file, so those settings will be reloaded the next time you run the program. If the file is ever corrupted, it will either rebuild the entire file with default settings, or parts of the file with default settings depending on what kind of errors arise.
+The config is a JSON file and will save custom settings. The program will only generate this file if you ever choose to save your settings. You can save current settings in the program which will update the config file and you can have multiple config profiles. If the file is ever corrupted, it will always be able to use the default settings.
 
 JSON Charset
 =

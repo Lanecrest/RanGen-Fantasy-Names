@@ -21,7 +21,7 @@ While using the GUI, the check boxes are used to select specific names you would
 
 JSON Config
 =
-The config is a JSON file and will save custom settings. The program will only generate this file if you ever choose to save your settings. You can save current settings in the program which will update the config file and you can have multiple config profiles. If the file is ever corrupted, it will always be able to use the default settings.
+The config is a JSON file and will save custom settings. The program will only generate this file if you ever choose to save your settings. You can save current settings in the program which will update the config file and will be the new settings that the program will reset to unless you choose to reset the config file back to system defaults. If the file is ever corrupted, it will always be able to use the default settings.
 
 JSON Charset
 =

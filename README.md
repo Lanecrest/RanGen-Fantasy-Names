@@ -10,8 +10,8 @@ While using the GUI, the check boxes are used to select specific names you would
 
 [Screenshots](/screenshots)
 =
-![Alt text](/screenshots/v4-0-0_main.png?raw=true "Main Window")
-![Alt text](/screenshots/v4-0-0_settings.png?raw=true "Settings Window")
+![Alt text](/screenshots/v1-0-0_main.png?raw=true "Main Window")
+![Alt text](/screenshots/v1-0-0_charsets.png?raw=true "Settings Window")
 
 [Change Log](CHANGELOG.md)
 =

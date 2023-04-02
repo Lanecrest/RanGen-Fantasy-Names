@@ -1,0 +1,14 @@
+{"Orc": {
+    "vowels": ["a", "e", "o", "u"],
+    "diphthongs": ["ae", "oa", "oe", "oo", "ou", "ua", "ue", "uo"],
+    "consonants": ["b", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "r", "t"],
+    "beginning_clusters": ["bl", "br", "dr", "fl", "fr", "gh", "gr", "gl", "kh", "kl", "kr", "pl", "pr", "th", "tr", "str", "thr"],
+    "ending_clusters": ["dd", "ff", "gg", "kk", "ll", "lt", "mb", "nd", "ng", "nk", "ph", "pp", "rd", "rf", "rg", "rk", "rl", "rm", "rn", "rp", "rt", "th", "tt", "rsh", "rnth"]
+},
+"Elf": {
+    "vowels": ["a", "e", "i", "o", "u"],
+    "diphthongs": ["ae", "ai", "au", "ei", "eu", "ie", "io", "oi", "ui"],
+    "consonants": ["b", "c", "d", "f", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v"],
+    "beginning_clusters": ["ch", "cl", "cr", "dr", "fl", "qu", "sc", "sh", "sl", "st",  "th", "tr"],
+    "ending_clusters": ["ct", "ld", "ll", "lv", "nd", "nt", "rd", "sh", "ss", "st", "th", "nd", "lth", "rth"]
+}}

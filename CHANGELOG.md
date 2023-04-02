@@ -1,5 +1,19 @@
 # Change Log
 
+v1.0.0 (04-02-23)
+-
+-Releases are now considered release candidate so beta numbering has been dropped.
+
+-Settings have been moved back to the main display, but are now to the right of the name outputs instead of under. It was found that the program was easier to use when the names and settings panel were side by side.
+
+-Made some minor aesthetic changes and updated About dialogue to reflect changes
+
+-Now includes a charsets.json file to demonstrate how character sets should be constructed if adding your own or changing what is in there. The Default character set is still hardcoded into the program.
+
+-Renamed main script to main.py and updated folder structure so the imported module and charsets file is in a subfolder
+
+-Added open source license info for GPL v3
+
 v4.0.0b (03-23-23)
 -
 -Major update to rangen_words module, now supports custom character sets via a JSON file

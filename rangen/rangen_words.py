@@ -7,7 +7,8 @@ class CharSet:
 # function to load the character set
 def load_charset(load_set=None):
     charset = CharSet()
-    charset_file = 'rangen_charsets.json'
+    charset_dir = os.path.dirname(os.path.realpath(__file__))   # make sure charsets file is loaded correctly if the script is imported
+    charset_file = os.path.join(charset_dir, 'charsets.json')
     default_set = {
         # if building your own character sets for a json file, each of these dictionaries need to be wrapped in, for example: 'CharSetName': { }
         'vowels': ['a', 'e', 'i', 'o', 'u', 'y'],
@@ -84,11 +85,11 @@ def rangen_word(load_set=None, beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0
             if i > 1 and letter == word[i-1] and letter == word[i-2]:
                 word = ''
                 break
-        # check if all the consonant probabilities were set to 0 which would cause an infinite loop, so instead it just prints empty names
+        # check if all the consonant probabilities were set to 0 which would cause an infinite loop, so instead it just prints empty words
         if beg_cons_prob == 0 and beg_cluster_prob == 0 and end_cons_prob == 0 and end_cluster_prob == 0:
             word = ''
             break
-        # check to only print words that contain at least one consonant. if there are no consonants then an empty name will print
+        # check to only print words that contain at least one consonant. if there are no consonants then an empty word will print
         if any(c in char_set.consonants or c in char_set.beginning_clusters or c in char_set.ending_clusters for c in word):
             break
     # insert a character between syllables if there are more than a certain number of total letters generated

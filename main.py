@@ -37,7 +37,7 @@ class RanGenFantasyNames(QMainWindow):
             'var_end_cluster_prob': 0.15,
             'var_max_syllables': 4,
             'var_name_split': True,
-            'var_split_char': " ",
+            'var_split_char': ' ',
             'var_name_long': 10            
         }
         # reset or repair the config file for various issues if it exists
@@ -96,29 +96,19 @@ class RanGenFantasyNames(QMainWindow):
      
     # function to update the config file with the current values
     def save_config(self):
-        profile_name, ok = QInputDialog.getText(self, 'Save Settings Profile', 'Enter profile name:')
-        if ok:
-            # create and write the config file if it doesn't exist
-            if not os.path.exists(self.config_file):
-                with open(self.config_file, 'w') as f:
-                    config = {profile_name: self.system_config}
-                    for key in config[profile_name]:
-                        config[profile_name][key] = getattr(self, key)
-            else:
-                with open(self.config_file, 'r') as f:
-                    config = json.load(f)
-                if profile_name in config:
-                    reply = QMessageBox.question(self, 'Overwrite Profile', 'A profile with that name already exists. Do you want to overwrite it?', QMessageBox.Yes | QMessageBox.No)
-                    if reply == QMessageBox.Yes:
-                        config[profile_name] = self.system_config
-                        for key in config[profile_name]:
-                            config[profile_name][key] = getattr(self, key)
-                else:
-                    config[profile_name] = self.system_config
-                    for key in config[profile_name]:
-                        config[profile_name][key] = getattr(self, key)
+        # create and write the config file if it doesn't exist
+        if not os.path.exists(self.config_file):
             with open(self.config_file, 'w') as f:
-                json.dump(config, f)
+                config = {'custom_config': self.system_config}
+                for key in config['custom_config']:
+                    config['custom_config'][key] = getattr(self, key)             
+        else:
+            with open(self.config_file, 'r') as f:
+                config = json.load(f)
+            for key in config['custom_config']:
+                config['custom_config'][key] = getattr(self, key)
+        with open(self.config_file, 'w') as f:
+            json.dump(config, f)
 
     # function to reset the config file to the hardcoded system defaults
     def reset_config(self):
@@ -221,8 +211,8 @@ class RanGenFantasyNames(QMainWindow):
         about_box = QMessageBox()
         about_box.setWindowTitle('About')
         about_box.setText(
-            '<p>RanGen Fantasy Names procedurally generates names by joining together randomly generated syllables that are constructed following "consonant-vowel-consonant" conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
-            '<p>The main display consists of randomly generated names based on the current settings. You can select names with the corresponding check box to prevent them from being re-rolled and you can also copy the selected names to your clipboard or export them to a CSV file.</p>'
+            '<p>RanGen Fantasy Names procedurally generates names by joining together randomly generated syllables that are constructed following consonant-vowel-consonant conventions. If you would like to see more about the project, check out the <a href="https://github.com/Lanecrest/RanGen-Fantasy-Names">GitHub</a> page.</p>'
+            '<p>The main display consists of randomly generated names based on the current settings. You can select names with the corresponding check box to prevent them from being re-rolled and you can also copy the selected names to your clipboard or export them to a CSV file. The "Roll" button will generate new names.</p>'
             '<p>In the settings panel, you can adjust several settings dynamically. You can save the settings at any time which will export them to a JSON file and become your new defaults. Resetting the config will revert your custom defaults to the original program defaults. Resetting values will reset to the current default values (either your custom or the program).</p>'
             '<p>You can also choose and view the current character set in the settings panel. If you do not have a JSON file of custom character sets, the only character set option available will be the default.</p>'
             '<p align="center">RanGen Fantasy Names ©2023 <a href="https://www.lanecrest.com/">Lanecrest Tech</a></p>'
@@ -416,12 +406,12 @@ class RanGenFantasyNames(QMainWindow):
             self.name_text_box[box_id].setReadOnly(True)
             self.name_text_box[box_id].setMinimumWidth(325)
             check_text_layout.addWidget(self.name_text_box[box_id],i, 1)
-            
+        
         # combo box to select the character set
         user_settings_charset = QHBoxLayout()
         self.char_set_label = QLabel('Use character set: ')
         self.char_set_combo_box = QComboBox()
-        self.char_set_combo_box.addItem("Default")
+        self.char_set_combo_box.addItem('Default')
         if os.path.exists(self.charset_file):
             with open(self.charset_file, 'r') as f:
                 char_sets = json.load(f)
@@ -526,7 +516,7 @@ class RanGenFantasyNames(QMainWindow):
         main_layout.addLayout(button_layout)
         main_layout.addLayout(check_text_layout)
         
-        settings_layout = QVBoxLayout()        
+        settings_layout = QVBoxLayout()      
         settings_layout.addLayout(user_settings_charset)
         settings_layout.addLayout(user_settings_syllables)
         settings_layout.addLayout(user_settings_split)

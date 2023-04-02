@@ -85,11 +85,11 @@ def rangen_word(load_set=None, beg_cons_prob=0, beg_cluster_prob=0, vowel_prob=0
             if i > 1 and letter == word[i-1] and letter == word[i-2]:
                 word = ''
                 break
-        # check if all the consonant probabilities were set to 0 which would cause an infinite loop, so instead it just prints empty names
+        # check if all the consonant probabilities were set to 0 which would cause an infinite loop, so instead it just prints empty words
         if beg_cons_prob == 0 and beg_cluster_prob == 0 and end_cons_prob == 0 and end_cluster_prob == 0:
             word = ''
             break
-        # check to only print words that contain at least one consonant. if there are no consonants then an empty name will print
+        # check to only print words that contain at least one consonant. if there are no consonants then an empty word will print
         if any(c in char_set.consonants or c in char_set.beginning_clusters or c in char_set.ending_clusters for c in word):
             break
     # insert a character between syllables if there are more than a certain number of total letters generated

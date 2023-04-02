@@ -7,7 +7,8 @@ class CharSet:
 # function to load the character set
 def load_charset(load_set=None):
     charset = CharSet()
-    charset_file = 'charsets.json'
+    charset_dir = os.path.dirname(os.path.realpath(__file__))   # make sure charsets file is loaded correctly if the script is imported
+    charset_file = os.path.join(charset_dir, 'charsets.json')
     default_set = {
         # if building your own character sets for a json file, each of these dictionaries need to be wrapped in, for example: 'CharSetName': { }
         'vowels': ['a', 'e', 'i', 'o', 'u', 'y'],
